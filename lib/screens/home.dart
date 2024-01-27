@@ -8,40 +8,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('fleuntify'),
-        shadowColor: const Color(0xffffffff),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        title: const Text(
+          'fluentify',
+          style: TextStyle(
+            color: Color(0xffffffff),
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        elevation: 0,
+        backgroundColor: const Color(0xff35BAC2),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              color: const Color(0xff35BAC2),
+              child: const Text('상단'),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: const Color(0xFFFAFAFA),
+              child: const Text('하단'),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Text('d'), label: 'Pratice'),
+          BottomNavigationBarItem(icon: Text('d'), label: 'History'),
+          BottomNavigationBarItem(icon: Text('d'), label: 'Settings')
+        ],
+        elevation: 0,
+        backgroundColor: const Color(0xFFFAFAFA),
+        selectedItemColor: const Color(0xff35BAC2),
+      ),
     );
   }
 }
