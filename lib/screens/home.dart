@@ -15,25 +15,24 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           'fluentify',
           style: TextStyle(
-            color: Color(0xffffffff),
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 0,
-        backgroundColor: const Color(0xff35BAC2),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Container(
-              color: const Color(0xff35BAC2),
+              color: Theme.of(context).colorScheme.primary,
               child: const Text('상단'),
             ),
           ),
           Expanded(
             child: Container(
-              color: const Color(0xFFFAFAFA),
               child: const Text('하단'),
             ),
           ),
@@ -41,13 +40,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Text('d'), label: 'Pratice'),
-          BottomNavigationBarItem(icon: Text('d'), label: 'History'),
-          BottomNavigationBarItem(icon: Text('d'), label: 'Settings')
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer_outlined),
+            label: 'Pratice',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_outlined),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            label: 'Settings',
+          )
         ],
         elevation: 0,
-        backgroundColor: const Color(0xFFFAFAFA),
-        selectedItemColor: const Color(0xff35BAC2),
       ),
     );
   }

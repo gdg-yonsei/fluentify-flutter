@@ -11,9 +11,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'fluentify',
-      home: HomeScreen(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF35BAC2),
+          primary: const Color(0xFF35BAC2),
+          secondary: const Color(0xFF35BAC2),
+          background: const Color(0xFFFAFAFA),
+        ),
+      ),
+      home: const HomeScreen(),
     );
   }
 }
