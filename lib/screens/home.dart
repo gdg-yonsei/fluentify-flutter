@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/home/fragments/history.dart';
+import '../widgets/home/fragments/practice.dart';
+import '../widgets/home/fragments/settings.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final List<Widget> _fragments = [
+    const PracticeFragment(),
+    const HistoryFragment(),
+    const SettingsFragment(),
+  ];
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentFragmentIndex = 0;
+
+  void _navigate(int index) {
+    setState(() {
+      _currentFragmentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,22 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 0,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primary,
-              child: const Text('상단'),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              child: const Text('하단'),
-            ),
-          ),
-        ],
-      ),
+      body: widget._fragments[_currentFragmentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -53,6 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Settings',
           )
         ],
+        currentIndex: _currentFragmentIndex,
+        onTap: _navigate,
         elevation: 0,
       ),
     );
