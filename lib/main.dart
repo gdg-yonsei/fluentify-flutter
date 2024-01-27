@@ -21,6 +21,7 @@ class App extends StatelessWidget {
           background: const Color(0xFFFAFAFA),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
   }

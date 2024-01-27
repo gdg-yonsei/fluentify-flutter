@@ -16,12 +16,26 @@ class _PracticeFragmentState extends State<PracticeFragment> {
         Expanded(
           child: Container(
             color: Theme.of(context).colorScheme.primary,
-            child: const Text('상단'),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.sentiment_satisfied_outlined,
+                  size: 100,
+                  color: Colors.white,
+                ),
+              ],
+            ),
           ),
         ),
-        Expanded(
-          child: Container(
-            child: const Text('하단'),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Let's practice!"),
+            ],
           ),
         ),
       ],
