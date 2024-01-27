@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'screens/sample.dart';
+import 'screens/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SampleScreen(title: 'fluentify'),
+      home: const HomeScreen(),
     );
   }
 }
