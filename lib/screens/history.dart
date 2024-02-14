@@ -7,7 +7,7 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      appBar: FluentifyAppBar(canGoBack: true),
+      appBar: FluentifyAppBar(),
       body: SafeArea(
         child: Text('History'),
       ),

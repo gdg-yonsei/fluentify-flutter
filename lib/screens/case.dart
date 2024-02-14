@@ -47,7 +47,7 @@ class _CaseScreenState extends State<CaseScreen> {
         );
       default:
         return Scaffold(
-          appBar: const FluentifyAppBar(canGoBack: true),
+          appBar: const FluentifyAppBar(),
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

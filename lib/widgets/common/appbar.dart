@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final bool canGoBack;
-
-  const FluentifyAppBar({super.key, this.canGoBack = false});
+  const FluentifyAppBar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -18,18 +16,9 @@ class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      leading: canGoBack
-          ? IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_outlined,
-                color: Colors.white,
-              ),
-            )
-          : null,
+      iconTheme: const IconThemeData(color: Colors.white),
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 0,
-      automaticallyImplyLeading: false,
     );
   }
 }
