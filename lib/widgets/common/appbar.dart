@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const FluentifyAppBar({super.key});
+  final Widget? title;
+
+  const FluentifyAppBar({super.key, this.title});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -9,13 +11,14 @@ class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text(
-        'fluentify',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      title: title ??
+          const Text(
+            'fluentify',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
       iconTheme: const IconThemeData(color: Colors.white),
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 0,

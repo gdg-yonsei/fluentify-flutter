@@ -19,13 +19,11 @@ class TopicScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => PendingScreen(
-                  nextScreen: CaseScreen(),
+              MaterialPageRoute(
+                builder: (context) => PendingScreen(
+                  nextScreen: CaseScreen(title: 'Bus Stop'),
                   title: 'Bus Stop',
                 ),
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero,
               ),
             );
             await show();
@@ -38,13 +36,11 @@ class TopicScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => PendingScreen(
-                  nextScreen: CaseScreen(),
+              MaterialPageRoute(
+                builder: (context) => PendingScreen(
+                  nextScreen: CaseScreen(title: 'Hospital'),
                   title: 'Hospital',
                 ),
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero,
               ),
             );
             await show();
@@ -57,13 +53,11 @@ class TopicScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) => PendingScreen(
-                  nextScreen: CaseScreen(),
+              MaterialPageRoute(
+                builder: (context) => PendingScreen(
+                  nextScreen: CaseScreen(title: 'School'),
                   title: 'School',
                 ),
-                transitionDuration: Duration.zero,
-                reverseTransitionDuration: Duration.zero,
               ),
             );
             await show();

@@ -4,7 +4,9 @@ import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
 class CaseScreen extends StatefulWidget {
-  CaseScreen({super.key});
+  final String title;
+
+  CaseScreen({super.key, required this.title});
 
   final List<String> cases = ['Case1', 'Case2', 'Case3', 'Case4'];
 
@@ -16,7 +18,18 @@ class _CaseScreenState extends State<CaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FluentifyAppBar(),
+      appBar: FluentifyAppBar(
+        title: Hero(
+          tag: widget.title,
+          child: Text(
+            widget.title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

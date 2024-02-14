@@ -28,8 +28,23 @@ class _PendingScreenState extends State<PendingScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => widget.nextScreen,
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
+          transitionsBuilder: (context, animation1, animation2, child) {
+            return animation1.status == AnimationStatus.forward
+                ? FadeTransition(
+                    opacity: animation1,
+                    child: child,
+                  )
+                : SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1.0, 0.0), // Slide from bottom
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: animation1,
+                      curve: Curves.ease,
+                    )),
+                    child: child,
+                  );
+          },
         ),
       );
     });
@@ -40,11 +55,14 @@ class _PendingScreenState extends State<PendingScreen> {
     return Container(
       alignment: Alignment.center,
       color: Theme.of(context).colorScheme.primary,
-      child: Text(
-        widget.title,
-        style: const TextStyle(
-          color: Colors.black26,
-          decoration: TextDecoration.none,
+      child: Hero(
+        tag: widget.title,
+        child: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.black26,
+            decoration: TextDecoration.none,
+          ),
         ),
       ),
     );
