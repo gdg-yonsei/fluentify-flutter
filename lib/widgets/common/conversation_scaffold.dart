@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/popper.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class ConversationScaffold extends StatefulWidget {
   final Conversation conversation;
@@ -20,89 +18,82 @@ class ConversationScaffold extends StatefulWidget {
 class _ConversationScaffoldState extends State<ConversationScaffold> {
   bool visible = false;
 
-  void withTransition(Function? afterTransition) {
-    if (afterTransition == null) return;
+  Future<void> _show() async {
+    setState(() {
+      visible = true;
+    });
 
+    // Wait until animation ends
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  Future<void> _hide() async {
     setState(() {
       visible = false;
     });
 
-    Timer(const Duration(milliseconds: 500), () {
-      afterTransition();
-    });
+    // Wait until animation ends
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    super.initState();
+
+    Timer(const Duration(seconds: 0), _show);
   }
 
   @override
   Widget build(BuildContext context) {
-    log('built!');
-
-    return VisibilityDetector(
-      key: const Key('conversation'),
-      onVisibilityChanged: (visibilityInfo) {
-        if (visibilityInfo.visibleFraction > 0 && visible == false) {
-          setState(() {
-            visible = true;
-          });
-        }
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: Theme.of(context).colorScheme.primary,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          color: Theme.of(context).colorScheme.primary,
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Avatar(),
+              const SizedBox(height: 30),
+              Popper(
+                visible: visible,
+                child: SpeechBubble(
+                  message: widget.conversation.question.message,
+                  edgeLocation: EdgeLocation.top,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Container(
+            alignment: Alignment.bottomCenter,
             padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Avatar(),
-                const SizedBox(height: 30),
-                Popper(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: widget.conversation.answers.length,
+              itemBuilder: (context, index) {
+                final option = widget.conversation.answers[index];
+                final isLast = index == widget.conversation.answers.length - 1;
+
+                return Popper(
                   visible: visible,
                   child: SpeechBubble(
-                    message: widget.conversation.question,
-                    edgeLocation: EdgeLocation.top,
+                    message: option.message,
+                    onTap: () => option.onAnswer?.call(_hide, _show),
+                    edgeLocation:
+                        isLast ? EdgeLocation.bottom : EdgeLocation.none,
                   ),
-                ),
-              ],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 16);
+              },
             ),
           ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.all(30),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: widget.conversation.answerOptions.length,
-                itemBuilder: (context, index) {
-                  final option = widget.conversation.answerOptions[index];
-                  final isLast =
-                      index == widget.conversation.answerOptions.length - 1;
-
-                  return Popper(
-                    visible: visible,
-                    child: SpeechBubble(
-                      message: option.message,
-                      onTap: () {
-                        withTransition(option.onTap);
-                      },
-                      edgeLocation:
-                          isLast ? EdgeLocation.bottom : EdgeLocation.none,
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 16);
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
