@@ -40,60 +40,73 @@ class _ConversationScaffoldState extends State<ConversationScaffold> {
   void initState() {
     super.initState();
 
+    // Animate after initiated
     Timer(const Duration(seconds: 0), _show);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          color: Theme.of(context).colorScheme.primary,
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Avatar(),
-              const SizedBox(height: 30),
-              Popper(
-                visible: visible,
-                child: SpeechBubble(
-                  message: widget.conversation.question.message,
-                  edgeLocation: EdgeLocation.top,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.bottomCenter,
-            padding: const EdgeInsets.all(30),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: widget.conversation.answers.length,
-              itemBuilder: (context, index) {
-                final option = widget.conversation.answers[index];
-                final isLast = index == widget.conversation.answers.length - 1;
+    return PopScope(
+      canPop: false,
+      // Animate before disposed
+      onPopInvoked: (canPop) async {
+        await _hide();
 
-                return Popper(
+        if (!context.mounted) return;
+
+        Navigator.pop(context);
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.primary,
+            padding: const EdgeInsets.all(30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Avatar(),
+                const SizedBox(height: 30),
+                Popper(
                   visible: visible,
                   child: SpeechBubble(
-                    message: option.message,
-                    onTap: () => option.onAnswer?.call(_hide, _show),
-                    edgeLocation:
-                        isLast ? EdgeLocation.bottom : EdgeLocation.none,
+                    message: widget.conversation.question.message,
+                    edgeLocation: EdgeLocation.top,
                   ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 16);
-              },
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              padding: const EdgeInsets.all(30),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: widget.conversation.answers.length,
+                itemBuilder: (context, index) {
+                  final option = widget.conversation.answers[index];
+                  final isLast =
+                      index == widget.conversation.answers.length - 1;
+
+                  return Popper(
+                    visible: visible,
+                    child: SpeechBubble(
+                      message: option.message,
+                      onTap: () => option.onAnswer?.call(_hide, _show),
+                      edgeLocation:
+                          isLast ? EdgeLocation.bottom : EdgeLocation.none,
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 16);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
