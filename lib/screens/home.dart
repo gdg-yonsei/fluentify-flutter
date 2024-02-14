@@ -1,64 +1,53 @@
+import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/screens/history.dart';
+import 'package:fluentify/screens/settings.dart';
+import 'package:fluentify/widgets/common/appbar.dart';
+import 'package:fluentify/widgets/common/conversation-template.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/home/fragments/history.dart';
-import '../widgets/home/fragments/practice.dart';
-import '../widgets/home/fragments/settings.dart';
-
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
-  final List<Widget> _fragments = [
-    const PracticeFragment(),
-    const HistoryFragment(),
-    const SettingsFragment(),
-  ];
+  Conversation _generateGreetingConversation(BuildContext context) {
+    return Conversation(
+      question: 'What are we gonna do today?',
+      answerOptions: [
+        ConversationAnswerOption(label: "Let's practice new things!"),
+        ConversationAnswerOption(
+          label: "I want to recap what we've done!",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HistoryScreen()),
+            );
+          },
+        ),
+        ConversationAnswerOption(
+          label: "I need to reset my configuration.",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentFragmentIndex = 0;
-
-  void _navigate(int index) {
-    setState(() {
-      _currentFragmentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'fluentify',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+      appBar: const FluentifyAppBar(),
+      body: SafeArea(
+        child: ConversationTemplate(
+          conversation: widget._generateGreetingConversation(context),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        elevation: 0,
-      ),
-      body: widget._fragments[_currentFragmentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer_outlined),
-            label: 'Pratice',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
-          )
-        ],
-        currentIndex: _currentFragmentIndex,
-        onTap: _navigate,
-        elevation: 0,
       ),
     );
   }
