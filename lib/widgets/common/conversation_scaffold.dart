@@ -1,11 +1,12 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
+import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
-class ConversationTemplate extends StatelessWidget {
+class ConversationScaffold extends StatelessWidget {
   final Conversation conversation;
 
-  const ConversationTemplate({super.key, required this.conversation});
+  const ConversationScaffold({super.key, required this.conversation});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class ConversationTemplate extends StatelessWidget {
             children: [
               const Avatar(),
               const SizedBox(height: 30),
-              SpeechBubble(label: conversation.question),
+              SpeechBubble(
+                message: conversation.question,
+                edgeLocation: EdgeLocation.top,
+              ),
             ],
           ),
         ),
@@ -33,8 +37,14 @@ class ConversationTemplate extends StatelessWidget {
               itemCount: conversation.answerOptions.length,
               itemBuilder: (context, index) {
                 final option = conversation.answerOptions[index];
+                final isLast = index == conversation.answerOptions.length - 1;
 
-                return SpeechBubble(label: option.label, onTap: option.onTap);
+                return SpeechBubble(
+                  message: option.message,
+                  onTap: option.onTap,
+                  edgeLocation:
+                      isLast ? EdgeLocation.bottom : EdgeLocation.none,
+                );
               },
               separatorBuilder: (context, index) {
                 return const SizedBox(height: 16);
@@ -43,29 +53,6 @@ class ConversationTemplate extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class SpeechBubble extends StatelessWidget {
-  final String label;
-  final Function? onTap;
-
-  const SpeechBubble({super.key, required this.label, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap?.call(),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        alignment: Alignment.center,
-        child: Text(label),
-      ),
     );
   }
 }

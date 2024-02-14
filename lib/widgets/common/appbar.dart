@@ -29,6 +29,7 @@ class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 0,
+      automaticallyImplyLeading: false,
     );
   }
 }

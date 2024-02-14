@@ -6,8 +6,8 @@ class Conversation {
 }
 
 class ConversationAnswerOption {
-  final String label;
+  final String message;
   final Function? onTap;
 
-  ConversationAnswerOption({required this.label, this.onTap});
+  ConversationAnswerOption({required this.message, this.onTap});
 }

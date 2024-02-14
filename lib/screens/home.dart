@@ -1,8 +1,9 @@
 import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/screens/case.dart';
 import 'package:fluentify/screens/history.dart';
 import 'package:fluentify/screens/settings.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
-import 'package:fluentify/widgets/common/conversation-template.dart';
+import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,9 +13,22 @@ class HomeScreen extends StatefulWidget {
     return Conversation(
       question: 'What are we gonna do today?',
       answerOptions: [
-        ConversationAnswerOption(label: "Let's practice new things!"),
         ConversationAnswerOption(
-          label: "I want to recap what we've done!",
+          message: "Let's practice new things!",
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) => CaseScreen(),
+                transitionsBuilder:
+                    (context, startAnimation, endAnimation, child) =>
+                        FadeTransition(opacity: startAnimation, child: child),
+              ),
+            );
+          },
+        ),
+        ConversationAnswerOption(
+          message: "I want to recap what we've done!",
           onTap: () {
             Navigator.push(
               context,
@@ -23,7 +37,7 @@ class HomeScreen extends StatefulWidget {
           },
         ),
         ConversationAnswerOption(
-          label: "I need to reset my configuration.",
+          message: "I need to reset my configuration.",
           onTap: () {
             Navigator.push(
               context,
@@ -45,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: const FluentifyAppBar(),
       body: SafeArea(
-        child: ConversationTemplate(
+        child: ConversationScaffold(
           conversation: widget._generateGreetingConversation(context),
         ),
       ),
