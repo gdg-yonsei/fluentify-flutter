@@ -1,6 +1,6 @@
-import 'package:fluentify/data/topics.dart';
+import 'package:fluentify/data/samples.dart';
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/feedback_select.dart';
+import 'package:fluentify/screens/selection/feedback_select.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
@@ -12,7 +12,7 @@ class TopicSelectScreen extends StatelessWidget {
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
       question: ConversationQuestion(message: "Let's move here!"),
-      answers: topics
+      answers: sampleTopics
           .map(
             (topic) => ConversationAnswer(
               message: topic.title,
