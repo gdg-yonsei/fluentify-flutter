@@ -5,15 +5,17 @@ import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-class TopicScreen extends StatelessWidget {
-  const TopicScreen({super.key});
+class FeedbackSelectScreen extends StatelessWidget {
+  final int topicId;
+
+  const FeedbackSelectScreen({super.key, required this.topicId});
 
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
-      question: ConversationQuestion(message: "Let's move here!"),
+      question: ConversationQuestion(message: "What do you want to practice?"),
       answers: [
         ConversationAnswer(
-          message: "Bus stop",
+          message: "I want to practice my pronunciation.",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
@@ -30,7 +32,7 @@ class TopicScreen extends StatelessWidget {
           },
         ),
         ConversationAnswer(
-          message: "Hospital",
+          message: "I want to practice my communication",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
@@ -40,23 +42,6 @@ class TopicScreen extends StatelessWidget {
                 builder: (context) => PendingScreen(
                   nextScreen: CaseScreen(title: 'Hospital'),
                   title: 'Hospital',
-                ),
-              ),
-            );
-            await show();
-          },
-        ),
-        ConversationAnswer(
-          message: "School",
-          onAnswer: (hide, show) async {
-            final navigator = Navigator.of(context);
-
-            await hide();
-            await navigator.push(
-              MaterialPageRoute(
-                builder: (context) => PendingScreen(
-                  nextScreen: CaseScreen(title: 'School'),
-                  title: 'School',
                 ),
               ),
             );

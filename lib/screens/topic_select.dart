@@ -1,28 +1,26 @@
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/history.dart';
-import 'package:fluentify/screens/settings.dart';
-import 'package:fluentify/screens/topic_select.dart';
+import 'package:fluentify/screens/feedback_select.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class TopicSelectScreen extends StatelessWidget {
+  const TopicSelectScreen({super.key});
 
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
-      question: ConversationQuestion(message: 'What are we gonna do today?'),
+      question: ConversationQuestion(message: "Let's move here!"),
       answers: [
         ConversationAnswer(
-          message: "Let's practice!",
+          message: "Bus stop",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
             await hide();
             await navigator.push(
               generateRoute(
-                const TopicSelectScreen(),
+                const FeedbackSelectScreen(topicId: 1),
                 transitionType: TransitionType.none,
               ),
             );
@@ -30,22 +28,32 @@ class HomeScreen extends StatelessWidget {
           },
         ),
         ConversationAnswer(
-          message: "I want to recap what we've done!",
+          message: "Hospital",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
             await hide();
-            await navigator.push(generateRoute(const HistoryScreen()));
+            await navigator.push(
+              generateRoute(
+                const FeedbackSelectScreen(topicId: 2),
+                transitionType: TransitionType.none,
+              ),
+            );
             await show();
           },
         ),
         ConversationAnswer(
-          message: "I need to reset my configuration.",
+          message: "School",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
             await hide();
-            await navigator.push(generateRoute(const SettingsScreen()));
+            await navigator.push(
+              generateRoute(
+                const FeedbackSelectScreen(topicId: 3),
+                transitionType: TransitionType.none,
+              ),
+            );
             await show();
           },
         ),
