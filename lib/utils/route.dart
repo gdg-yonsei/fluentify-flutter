@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 enum TransitionType { system, fade, none }
 
-Route generateRoute(Widget nextScreen,
-    {TransitionType transitionType = TransitionType.system}) {
+Route generateRoute(
+  Widget nextScreen, {
+  TransitionType transitionType = TransitionType.system,
+}) {
   switch (transitionType) {
     case TransitionType.fade:
       return PageRouteBuilder(

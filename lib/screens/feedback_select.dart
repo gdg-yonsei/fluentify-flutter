@@ -1,6 +1,7 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/screens/case.dart';
 import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,8 @@ class FeedbackSelectScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(
-              MaterialPageRoute(
-                builder: (context) => PendingScreen(
+              generateRoute(
+                PendingScreen(
                   nextScreen: CaseScreen(title: 'Bus Stop'),
                   title: 'Bus Stop',
                 ),
@@ -38,10 +39,10 @@ class FeedbackSelectScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(
-              MaterialPageRoute(
-                builder: (context) => PendingScreen(
-                  nextScreen: CaseScreen(title: 'Hospital'),
-                  title: 'Hospital',
+              generateRoute(
+                PendingScreen(
+                  nextScreen: CaseScreen(title: 'Bus Stop'),
+                  title: 'Bus Stop',
                 ),
               ),
             );
