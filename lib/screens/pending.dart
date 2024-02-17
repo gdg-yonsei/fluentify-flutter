@@ -1,53 +1,39 @@
 import 'dart:async';
 
+import 'package:fluentify/utils/route.dart';
 import 'package:flutter/material.dart';
 
-class PendingScreen extends StatefulWidget {
-  final Widget nextScreen;
-  final String title;
-  final Duration delay;
+class PendingScreen<T> extends StatefulWidget {
+  final String label;
+  final Future<T> Function() action;
+  final Widget Function(T) nextScreen;
 
   const PendingScreen({
     super.key,
+    required this.label,
+    required this.action,
     required this.nextScreen,
-    required this.title,
-    this.delay = const Duration(seconds: 2),
   });
 
   @override
-  State<PendingScreen> createState() => _PendingScreenState();
+  State<PendingScreen> createState() => _PendingScreenState<T>();
 }
 
-class _PendingScreenState extends State<PendingScreen> {
+class _PendingScreenState<T> extends State<PendingScreen<T>> {
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(widget.delay, () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => widget.nextScreen,
-          transitionsBuilder: (context, animation1, animation2, child) {
-            return animation1.status == AnimationStatus.forward
-                ? FadeTransition(
-                    opacity: animation1,
-                    child: child,
-                  )
-                : SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(1.0, 0.0), // Slide from bottom
-                      end: Offset.zero,
-                    ).animate(CurvedAnimation(
-                      parent: animation1,
-                      curve: Curves.ease,
-                    )),
-                    child: child,
-                  );
-          },
-        ),
-      );
-    });
+    widget.action().then(
+      (result) {
+        Navigator.of(context).pushReplacement(
+          generateRoute(
+            widget.nextScreen(result),
+            transitionType: TransitionType.fade,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -56,9 +42,9 @@ class _PendingScreenState extends State<PendingScreen> {
       alignment: Alignment.center,
       color: Theme.of(context).colorScheme.primary,
       child: Hero(
-        tag: widget.title,
+        tag: widget.label,
         child: Text(
-          widget.title,
+          widget.label,
           style: const TextStyle(
             color: Colors.black26,
             decoration: TextDecoration.none,

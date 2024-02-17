@@ -1,5 +1,7 @@
+import 'package:fluentify/data/samples.dart';
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/case.dart';
+import 'package:fluentify/screens/feedback/communication_feedback.dart';
+import 'package:fluentify/screens/feedback/pronunciation_feedback.dart';
 import 'package:fluentify/screens/pending.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -24,8 +26,17 @@ class FeedbackSelectScreen extends StatelessWidget {
             await navigator.push(
               generateRoute(
                 PendingScreen(
-                  nextScreen: CaseScreen(title: 'Bus Stop'),
-                  title: 'Bus Stop',
+                  label: 'Case 1',
+                  action: () {
+                    return Future.delayed(
+                      const Duration(seconds: 2),
+                      () => sampleSentences[0],
+                    );
+                  },
+                  nextScreen: (sentence) => PronunciationFeedbackScreen(
+                    index: 1,
+                    sentence: sentence,
+                  ),
                 ),
               ),
             );
@@ -41,8 +52,17 @@ class FeedbackSelectScreen extends StatelessWidget {
             await navigator.push(
               generateRoute(
                 PendingScreen(
-                  nextScreen: CaseScreen(title: 'Bus Stop'),
-                  title: 'Bus Stop',
+                  label: 'Case 1',
+                  action: () {
+                    return Future.delayed(
+                      const Duration(seconds: 2),
+                      () => sampleScenes[0],
+                    );
+                  },
+                  nextScreen: (scene) => CommunicationFeedbackScreen(
+                    index: 1,
+                    scene: scene,
+                  ),
                 ),
               ),
             );

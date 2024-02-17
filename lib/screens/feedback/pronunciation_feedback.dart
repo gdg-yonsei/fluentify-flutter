@@ -1,14 +1,18 @@
+import 'package:fluentify/interfaces/sentence.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
-  final String title;
+  final int index;
+  final Sentence sentence;
 
-  PronunciationFeedbackScreen({super.key, required this.title});
-
-  final List<String> cases = ['Case1', 'Case2', 'Case3', 'Case4'];
+  const PronunciationFeedbackScreen({
+    super.key,
+    required this.index,
+    required this.sentence,
+  });
 
   @override
   State<PronunciationFeedbackScreen> createState() =>
@@ -22,9 +26,9 @@ class _PronunciationFeedbackScreenState
     return Scaffold(
       appBar: FluentifyAppBar(
         title: Hero(
-          tag: widget.title,
+          tag: 'Case ${widget.index}',
           child: Text(
-            widget.title,
+            'Case ${widget.index}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -44,7 +48,7 @@ class _PronunciationFeedbackScreenState
                 children: [
                   const Avatar(),
                   const SizedBox(height: 30),
-                  SpeechBubble(message: widget.cases[0]),
+                  SpeechBubble(message: widget.sentence.text),
                 ],
               ),
             ),
