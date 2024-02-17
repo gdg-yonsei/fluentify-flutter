@@ -37,7 +37,7 @@ class SpeechBubble extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             alignment: Alignment.center,
-            child: Text(message),
+            child: Text(message, textAlign: TextAlign.center),
           ),
           if (edgeLocation == EdgeLocation.bottom)
             ClipPath(

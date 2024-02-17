@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/scene.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
+import 'package:fluentify/widgets/common/recorder.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +21,19 @@ class CommunicationFeedbackScreen extends StatefulWidget {
     required this.scene,
   });
 
+  String _generateGuide(FeedbackState state) {
+    switch (state) {
+      case FeedbackState.ready:
+        return 'Press the record button and say the sentence below!';
+      case FeedbackState.recording:
+        return "Now I'm listening!";
+      case FeedbackState.evaluating:
+        return "Wait a second! I'm evaluating your pronunciation.";
+      case FeedbackState.done:
+        return 'Perfect!';
+    }
+  }
+
   @override
   State<CommunicationFeedbackScreen> createState() =>
       _CommunicationFeedbackScreenState();
@@ -24,6 +41,30 @@ class CommunicationFeedbackScreen extends StatefulWidget {
 
 class _CommunicationFeedbackScreenState
     extends State<CommunicationFeedbackScreen> {
+  FeedbackState state = FeedbackState.ready;
+
+  void startRecord() {
+    setState(() {
+      state = FeedbackState.recording;
+    });
+  }
+
+  void finishRecord() {
+    setState(() {
+      state = FeedbackState.evaluating;
+    });
+
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        state = FeedbackState.done;
+      });
+    });
+  }
+
+  void goNext() {
+    log('Next step');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,25 +84,46 @@ class _CommunicationFeedbackScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              color: Theme.of(context).colorScheme.primary,
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Avatar(),
-                  const SizedBox(height: 30),
-                  SpeechBubble(message: widget.scene.question),
-                ],
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+              child: Container(
+                color: Theme.of(context).colorScheme.primary,
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Avatar(),
+                    const SizedBox(height: 30),
+                    SpeechBubble(
+                      message: widget._generateGuide(state),
+                      edgeLocation: EdgeLocation.top,
+                    ),
+                    const SizedBox(height: 10),
+                    SpeechBubble(message: '"${widget.scene.question}"'),
+                  ],
+                ),
               ),
             ),
             Expanded(
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.all(30),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.mic_outlined),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (state == FeedbackState.ready ||
+                        state == FeedbackState.recording)
+                      Recorder(
+                        isRecording: state == FeedbackState.recording,
+                        onStartRecord: startRecord,
+                        onFinishRecord: finishRecord,
+                      ),
+                    if (state == FeedbackState.done)
+                      const SpeechBubble(
+                        message: "I got it! Let's go next step!",
+                        edgeLocation: EdgeLocation.bottom,
+                      ),
+                  ],
                 ),
               ),
             ),

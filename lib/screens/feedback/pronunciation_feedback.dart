@@ -21,6 +21,19 @@ class PronunciationFeedbackScreen extends StatefulWidget {
     required this.sentence,
   });
 
+  String _generateGuide(FeedbackState state) {
+    switch (state) {
+      case FeedbackState.ready:
+        return 'Press the record button and say the sentence below!';
+      case FeedbackState.recording:
+        return "Now I'm listening!";
+      case FeedbackState.evaluating:
+        return "Wait a second! I'm evaluating your pronunciation.";
+      case FeedbackState.done:
+        return 'Perfect!';
+    }
+  }
+
   @override
   State<PronunciationFeedbackScreen> createState() =>
       _PronunciationFeedbackScreenState();
@@ -71,16 +84,25 @@ class _PronunciationFeedbackScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              color: Theme.of(context).colorScheme.primary,
-              padding: const EdgeInsets.all(30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Avatar(),
-                  const SizedBox(height: 30),
-                  SpeechBubble(message: widget.sentence.text),
-                ],
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+              child: Container(
+                color: Theme.of(context).colorScheme.primary,
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Avatar(),
+                    const SizedBox(height: 30),
+                    SpeechBubble(
+                      message: widget._generateGuide(state),
+                      edgeLocation: EdgeLocation.top,
+                    ),
+                    const SizedBox(height: 10),
+                    SpeechBubble(message: '"${widget.sentence.text}"'),
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -89,33 +111,17 @@ class _PronunciationFeedbackScreenState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if (state == FeedbackState.done) ...[
-                      SpeechBubble(
-                        message: "Go next step!",
-                        edgeLocation: EdgeLocation.bottom,
-                        onTap: goNext,
-                      ),
-                    ],
-                    if (state == FeedbackState.evaluating) ...[
-                      const SpeechBubble(
-                        message:
-                            "Wait a second! Now I'm evaluating your pronunciation.",
-                        edgeLocation: EdgeLocation.bottom,
-                      ),
-                    ],
-                    if (state == FeedbackState.recording) ...[
-                      const SpeechBubble(
-                        message: "Now I'm recording!",
-                        edgeLocation: EdgeLocation.bottom,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
                     if (state == FeedbackState.ready ||
                         state == FeedbackState.recording)
                       Recorder(
                         isRecording: state == FeedbackState.recording,
                         onStartRecord: startRecord,
                         onFinishRecord: finishRecord,
+                      ),
+                    if (state == FeedbackState.done)
+                      const SpeechBubble(
+                        message: "I got it! Let's go next step!",
+                        edgeLocation: EdgeLocation.bottom,
                       ),
                   ],
                 ),

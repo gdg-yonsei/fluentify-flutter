@@ -48,7 +48,7 @@ class FeedbackSelectScreen extends StatelessWidget {
           },
         ),
         ConversationAnswer(
-          message: "I want to practice my communication",
+          message: "I want to practice my communication.",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
