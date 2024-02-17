@@ -4,6 +4,7 @@ import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/popper.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
+import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:flutter/material.dart';
 
 class ConversationScaffold extends StatefulWidget {
@@ -56,56 +57,42 @@ class _ConversationScaffoldState extends State<ConversationScaffold> {
 
         Navigator.pop(context);
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: Theme.of(context).colorScheme.primary,
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Avatar(),
-                const SizedBox(height: 30),
-                Popper(
-                  visible: visible,
-                  child: SpeechBubble(
-                    message: widget.conversation.question.message,
-                    edgeLocation: EdgeLocation.top,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.all(30),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: widget.conversation.answers.length,
-                itemBuilder: (context, index) {
-                  final option = widget.conversation.answers[index];
-                  final isLast =
-                      index == widget.conversation.answers.length - 1;
-
-                  return Popper(
-                    visible: visible,
-                    child: SpeechBubble(
-                      message: option.message,
-                      onTap: () => option.onAnswer?.call(_hide, _show),
-                      edgeLocation:
-                          isLast ? EdgeLocation.bottom : EdgeLocation.none,
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 16);
-                },
+      child: Splitter(
+        padding: 20,
+        top: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Avatar(),
+            const SizedBox(height: 30),
+            Popper(
+              visible: visible,
+              child: SpeechBubble(
+                message: widget.conversation.question.message,
+                edgeLocation: EdgeLocation.top,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        bottom: ListView.separated(
+          shrinkWrap: true,
+          itemCount: widget.conversation.answers.length,
+          itemBuilder: (context, index) {
+            final option = widget.conversation.answers[index];
+            final isLast = index == widget.conversation.answers.length - 1;
+
+            return Popper(
+              visible: visible,
+              child: SpeechBubble(
+                message: option.message,
+                onTap: () => option.onAnswer?.call(_hide, _show),
+                edgeLocation: isLast ? EdgeLocation.bottom : EdgeLocation.none,
+              ),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 16);
+          },
+        ),
       ),
     );
   }
