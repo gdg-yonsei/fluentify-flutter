@@ -5,11 +5,14 @@ import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
+  final List<int> sentenceIds;
+
   final int index;
   final Sentence sentence;
 
   const PronunciationFeedbackScreen({
     super.key,
+    required this.sentenceIds,
     required this.index,
     required this.sentence,
   });

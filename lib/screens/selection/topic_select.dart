@@ -22,7 +22,7 @@ class TopicSelectScreen extends StatelessWidget {
                 await hide();
                 await navigator.push(
                   generateRoute(
-                    FeedbackSelectScreen(topicId: topic.id),
+                    FeedbackSelectScreen(topic: topic),
                     transitionType: TransitionType.none,
                   ),
                 );

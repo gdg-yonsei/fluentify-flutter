@@ -5,11 +5,14 @@ import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
+  final List<int> sceneIds;
+
   final int index;
   final Scene scene;
 
   const CommunicationFeedbackScreen({
     super.key,
+    required this.sceneIds,
     required this.index,
     required this.scene,
   });
