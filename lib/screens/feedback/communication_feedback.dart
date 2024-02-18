@@ -1,6 +1,7 @@
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/scene.pb.dart';
 import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/feedback.dart';
 import 'package:fluentify/services/scene.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
   final SceneService sceneService = SceneService();
+  final FeedbackService feedbackService = FeedbackService();
 
   final List<String> sceneIds;
 
@@ -53,23 +55,25 @@ class _CommunicationFeedbackScreenState
     });
   }
 
-  void finishRecord() {
+  void finishRecord() async {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        state = FeedbackState.done;
-      });
+    final feedback = await widget.feedbackService.getCommunicationFeedback(
+      sceneId: widget.scene.id,
+    );
+
+    setState(() {
+      state = FeedbackState.done;
     });
   }
 
   void goNext() {
-    Navigator.of(context).push(
+    Navigator.of(context).pushReplacement(
       generateRoute(
         PendingScreen(
-          label: 'Case ${widget.index + 1}',
+          label: 'Case ${widget.index + 2}',
           action: () async {
             final scene = await widget.sceneService.getScene(
               id: widget.sceneIds[widget.index + 1],
@@ -95,9 +99,9 @@ class _CommunicationFeedbackScreenState
     return Scaffold(
       appBar: FluentifyAppBar(
         title: Hero(
-          tag: 'Case ${widget.index}',
+          tag: 'Case ${widget.index + 1}',
           child: Text(
-            'Case ${widget.index}',
+            'Case ${widget.index + 1}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

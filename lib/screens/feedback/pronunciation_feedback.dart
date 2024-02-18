@@ -66,10 +66,10 @@ class _PronunciationFeedbackScreenState
   }
 
   void goNext() {
-    Navigator.of(context).push(
+    Navigator.of(context).pushReplacement(
       generateRoute(
         PendingScreen(
-          label: 'Case ${widget.index + 1}',
+          label: 'Case ${widget.index + 2}',
           action: () async {
             final sentence = await widget.sentenceService.getSentence(
               id: widget.sentenceIds[widget.index + 1],
@@ -95,9 +95,9 @@ class _PronunciationFeedbackScreenState
     return Scaffold(
       appBar: FluentifyAppBar(
         title: Hero(
-          tag: 'Case ${widget.index}',
+          tag: 'Case ${widget.index + 1}',
           child: Text(
-            'Case ${widget.index}',
+            'Case ${widget.index + 1}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
