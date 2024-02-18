@@ -132,7 +132,10 @@ class _CommunicationFeedbackScreenState
                 ),
               ],
               if (state == FeedbackState.done) ...[
-                SpeechBubble(message: feedback.overallFeedback),
+                SpeechBubble(
+                  message: feedback.overallFeedback,
+                  edgeLocation: EdgeLocation.top,
+                ),
               ],
             ],
           ),
