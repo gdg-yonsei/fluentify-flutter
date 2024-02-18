@@ -1,6 +1,5 @@
+import 'package:fluentify/screens/home.dart';
 import 'package:flutter/material.dart';
-
-import 'screens/home.dart';
 
 void main() {
   runApp(const App());
@@ -22,7 +21,7 @@ class App extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

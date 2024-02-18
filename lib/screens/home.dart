@@ -1,64 +1,66 @@
+import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/screens/history.dart';
+import 'package:fluentify/screens/selection/topic_select.dart';
+import 'package:fluentify/screens/settings.dart';
+import 'package:fluentify/utils/route.dart';
+import 'package:fluentify/widgets/common/appbar.dart';
+import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/home/fragments/history.dart';
-import '../widgets/home/fragments/practice.dart';
-import '../widgets/home/fragments/settings.dart';
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  Conversation _generateConversation(BuildContext context) {
+    return Conversation(
+      question: ConversationQuestion(message: 'What are we gonna do today?'),
+      answers: [
+        ConversationAnswer(
+          message: "Let's practice!",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
 
-  final List<Widget> _fragments = [
-    const PracticeFragment(),
-    const HistoryFragment(),
-    const SettingsFragment(),
-  ];
+            await hide();
+            await navigator.push(
+              generateRoute(
+                const TopicSelectScreen(),
+                transitionType: TransitionType.none,
+              ),
+            );
+            await show();
+          },
+        ),
+        ConversationAnswer(
+          message: "I want to recap what we've done!",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+            await hide();
+            await navigator.push(generateRoute(const HistoryScreen()));
+            await show();
+          },
+        ),
+        ConversationAnswer(
+          message: "I need to reset my configuration.",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentFragmentIndex = 0;
-
-  void _navigate(int index) {
-    setState(() {
-      _currentFragmentIndex = index;
-    });
+            await hide();
+            await navigator.push(generateRoute(const SettingsScreen()));
+            await show();
+          },
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'fluentify',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+      appBar: const FluentifyAppBar(),
+      body: SafeArea(
+        child: ConversationScaffold(
+          conversation: _generateConversation(context),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        elevation: 0,
-      ),
-      body: widget._fragments[_currentFragmentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer_outlined),
-            label: 'Pratice',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
-          )
-        ],
-        currentIndex: _currentFragmentIndex,
-        onTap: _navigate,
-        elevation: 0,
       ),
     );
   }
