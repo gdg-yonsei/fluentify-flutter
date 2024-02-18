@@ -16,7 +16,7 @@ class CompleteScreen extends StatelessWidget {
         child: ConversationScaffold(
           conversation: Conversation(
             question: ConversationQuestion(
-              message: 'Now we finish practicing!',
+              message: "Now we're done!",
             ),
             answers: [
               ConversationAnswer(

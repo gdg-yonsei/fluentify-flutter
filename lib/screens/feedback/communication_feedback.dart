@@ -10,9 +10,9 @@ import 'package:fluentify/services/scene.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
-import 'package:fluentify/widgets/common/recorder.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
+import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
@@ -30,17 +30,6 @@ class CommunicationFeedbackScreen extends StatefulWidget {
     required this.index,
     required this.scene,
   });
-
-  String _generateGuide(FeedbackState state) {
-    switch (state) {
-      case FeedbackState.ready:
-        return 'Press the record button and answer the question with the image below!';
-      case FeedbackState.evaluating:
-        return "Wait a second! I'm evaluating your pronunciation.";
-      case FeedbackState.done:
-        return 'This is my feedback!';
-    }
-  }
 
   @override
   State<CommunicationFeedbackScreen> createState() =>
@@ -120,11 +109,12 @@ class _CommunicationFeedbackScreenState
             children: [
               const Avatar(),
               const SizedBox(height: 30),
-              SpeechBubble(
-                message: widget._generateGuide(state),
-                edgeLocation: EdgeLocation.top,
-              ),
               if (state == FeedbackState.ready) ...[
+                const SpeechBubble(
+                  message:
+                      'Press the record button and answer the question with the image below!',
+                  edgeLocation: EdgeLocation.top,
+                ),
                 const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
@@ -135,8 +125,13 @@ class _CommunicationFeedbackScreenState
                 const SizedBox(height: 10),
                 SpeechBubble(message: '"${widget.scene.question}"'),
               ],
+              if (state == FeedbackState.evaluating) ...[
+                const SpeechBubble(
+                  message: "Wait a second!\nI'm evaluating your speech.",
+                  edgeLocation: EdgeLocation.top,
+                ),
+              ],
               if (state == FeedbackState.done) ...[
-                const SizedBox(height: 10),
                 SpeechBubble(message: feedback.overallFeedback),
               ],
             ],

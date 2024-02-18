@@ -10,9 +10,10 @@ import 'package:fluentify/services/sentence.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
-import 'package:fluentify/widgets/common/recorder.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
+import 'package:fluentify/widgets/feedback/corrector.dart';
+import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
@@ -29,17 +30,6 @@ class PronunciationFeedbackScreen extends StatefulWidget {
     required this.index,
     required this.sentence,
   });
-
-  String _generateGuide(FeedbackState state) {
-    switch (state) {
-      case FeedbackState.ready:
-        return 'Press the record button and say the sentence below!';
-      case FeedbackState.evaluating:
-        return "Wait a second! I'm evaluating your pronunciation.";
-      case FeedbackState.done:
-        return 'This is my feedback!';
-    }
-  }
 
   @override
   State<PronunciationFeedbackScreen> createState() =>
@@ -119,17 +109,36 @@ class _PronunciationFeedbackScreenState
             children: [
               const Avatar(),
               const SizedBox(height: 30),
-              SpeechBubble(
-                message: widget._generateGuide(state),
-                edgeLocation: EdgeLocation.top,
-              ),
               if (state == FeedbackState.ready) ...[
+                const SpeechBubble(
+                  message:
+                      'Press the record button and say the sentence below!',
+                  edgeLocation: EdgeLocation.top,
+                ),
                 const SizedBox(height: 10),
                 SpeechBubble(message: '"${widget.sentence.text}"'),
               ],
+              if (state == FeedbackState.evaluating) ...[
+                const SpeechBubble(
+                  message: "Wait a second!\nI'm evaluating your pronunciation.",
+                  edgeLocation: EdgeLocation.top,
+                ),
+              ],
               if (state == FeedbackState.done) ...[
+                SpeechBubble(
+                  message: feedback.overallFeedback,
+                  edgeLocation: EdgeLocation.top,
+                ),
                 const SizedBox(height: 10),
-                SpeechBubble(message: feedback.overallFeedback),
+                const SpeechBubble(
+                  message:
+                      'The below one is the corrected version of your speech.',
+                ),
+                const SizedBox(height: 10),
+                Corrector(
+                  text: widget.sentence.text,
+                  incorrectIndexes: feedback.incorrectIndexes,
+                ),
               ],
             ],
           ),
