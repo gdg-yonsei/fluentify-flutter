@@ -1,1 +1,1 @@
-enum FeedbackState { ready, recording, evaluating, done }
+enum FeedbackState { ready, evaluating, done }

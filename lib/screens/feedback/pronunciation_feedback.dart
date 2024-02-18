@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:fluentify/interfaces/feedback.dart';
+import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
 import 'package:fluentify/screens/complete.dart';
 import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/feedback.dart';
 import 'package:fluentify/services/sentence.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -13,9 +17,9 @@ import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
   final SentenceService sentenceService = SentenceService();
+  final FeedbackService feedbackService = FeedbackService();
 
   final List<String> sentenceIds;
-
   final int index;
   final SentenceDTO sentence;
 
@@ -30,12 +34,10 @@ class PronunciationFeedbackScreen extends StatefulWidget {
     switch (state) {
       case FeedbackState.ready:
         return 'Press the record button and say the sentence below!';
-      case FeedbackState.recording:
-        return "Now I'm listening!";
       case FeedbackState.evaluating:
         return "Wait a second! I'm evaluating your pronunciation.";
       case FeedbackState.done:
-        return 'Perfect!';
+        return 'This is my feedback!';
     }
   }
 
@@ -47,22 +49,21 @@ class PronunciationFeedbackScreen extends StatefulWidget {
 class _PronunciationFeedbackScreenState
     extends State<PronunciationFeedbackScreen> {
   FeedbackState state = FeedbackState.ready;
+  late PronunciationFeedbackDTO feedback;
 
-  void startRecord() {
-    setState(() {
-      state = FeedbackState.recording;
-    });
-  }
+  void finishRecord(String audioPath) async {
+    log('audio path : $audioPath');
 
-  void finishRecord() {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        state = FeedbackState.done;
-      });
+    feedback = await widget.feedbackService.getPronunciationFeedback(
+      sentenceId: widget.sentence.id,
+    );
+
+    setState(() {
+      state = FeedbackState.done;
     });
   }
 
@@ -122,19 +123,20 @@ class _PronunciationFeedbackScreenState
                 message: widget._generateGuide(state),
                 edgeLocation: EdgeLocation.top,
               ),
-              const SizedBox(height: 10),
-              SpeechBubble(message: '"${widget.sentence.text}"'),
+              if (state == FeedbackState.ready) ...[
+                const SizedBox(height: 10),
+                SpeechBubble(message: '"${widget.sentence.text}"'),
+              ],
+              if (state == FeedbackState.done) ...[
+                const SizedBox(height: 10),
+                SpeechBubble(message: feedback.overallFeedback),
+              ],
             ],
           ),
           bottom: Column(
             children: [
-              if (state == FeedbackState.ready ||
-                  state == FeedbackState.recording)
-                Recorder(
-                  isRecording: state == FeedbackState.recording,
-                  onStartRecord: startRecord,
-                  onFinishRecord: finishRecord,
-                ),
+              if (state == FeedbackState.ready)
+                Recorder(onFinishRecord: finishRecord),
               if (state == FeedbackState.done)
                 SpeechBubble(
                   message: "I got it! Let's go next step!",

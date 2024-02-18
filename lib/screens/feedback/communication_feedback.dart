@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:fluentify/interfaces/feedback.dart';
+import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/interfaces/scene.pb.dart';
 import 'package:fluentify/screens/complete.dart';
 import 'package:fluentify/screens/pending.dart';
@@ -32,12 +35,10 @@ class CommunicationFeedbackScreen extends StatefulWidget {
     switch (state) {
       case FeedbackState.ready:
         return 'Press the record button and answer the question with the image below!';
-      case FeedbackState.recording:
-        return "Now I'm listening!";
       case FeedbackState.evaluating:
         return "Wait a second! I'm evaluating your pronunciation.";
       case FeedbackState.done:
-        return 'Perfect!';
+        return 'This is my feedback!';
     }
   }
 
@@ -49,19 +50,16 @@ class CommunicationFeedbackScreen extends StatefulWidget {
 class _CommunicationFeedbackScreenState
     extends State<CommunicationFeedbackScreen> {
   FeedbackState state = FeedbackState.ready;
+  late CommunicationFeedbackDTO feedback;
 
-  void startRecord() {
-    setState(() {
-      state = FeedbackState.recording;
-    });
-  }
+  void finishRecord(String audioPath) async {
+    log('audio path : $audioPath');
 
-  void finishRecord() async {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    final feedback = await widget.feedbackService.getCommunicationFeedback(
+    feedback = await widget.feedbackService.getCommunicationFeedback(
       sceneId: widget.scene.id,
     );
 
@@ -126,26 +124,27 @@ class _CommunicationFeedbackScreenState
                 message: widget._generateGuide(state),
                 edgeLocation: EdgeLocation.top,
               ),
-              const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image(
-                  image: NetworkImage(widget.scene.imageUrl),
+              if (state == FeedbackState.ready) ...[
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image(
+                    image: NetworkImage(widget.scene.imageUrl),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              SpeechBubble(message: '"${widget.scene.question}"'),
+                const SizedBox(height: 10),
+                SpeechBubble(message: '"${widget.scene.question}"'),
+              ],
+              if (state == FeedbackState.done) ...[
+                const SizedBox(height: 10),
+                SpeechBubble(message: feedback.overallFeedback),
+              ],
             ],
           ),
           bottom: Column(
             children: [
-              if (state == FeedbackState.ready ||
-                  state == FeedbackState.recording)
-                Recorder(
-                  isRecording: state == FeedbackState.recording,
-                  onStartRecord: startRecord,
-                  onFinishRecord: finishRecord,
-                ),
+              if (state == FeedbackState.ready)
+                Recorder(onFinishRecord: finishRecord),
               if (state == FeedbackState.done)
                 SpeechBubble(
                   message: "I got it! Let's go next step!",
