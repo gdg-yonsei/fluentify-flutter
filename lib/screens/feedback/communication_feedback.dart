@@ -1,5 +1,6 @@
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/screens/complete.dart';
 import 'package:fluentify/screens/pending.dart';
 import 'package:fluentify/services/feedback.dart';
 import 'package:fluentify/services/scene.dart';
@@ -70,25 +71,29 @@ class _CommunicationFeedbackScreenState
   }
 
   void goNext() {
+    final nextIndex = widget.index + 1;
+
     Navigator.of(context).pushReplacement(
       generateRoute(
-        PendingScreen(
-          label: 'Case ${widget.index + 2}',
-          action: () async {
-            final scene = await widget.sceneService.getScene(
-              id: widget.sceneIds[widget.index + 1],
-            );
+        nextIndex < widget.sceneIds.length
+            ? PendingScreen(
+                label: 'Case ${nextIndex + 1}',
+                action: () async {
+                  final scene = await widget.sceneService.getScene(
+                    id: widget.sceneIds[nextIndex],
+                  );
 
-            return scene;
-          },
-          nextScreen: (scene) {
-            return CommunicationFeedbackScreen(
-              sceneIds: widget.sceneIds,
-              index: widget.index + 1,
-              scene: scene,
-            );
-          },
-        ),
+                  return scene;
+                },
+                nextScreen: (scene) {
+                  return CommunicationFeedbackScreen(
+                    sceneIds: widget.sceneIds,
+                    index: nextIndex,
+                    scene: scene,
+                  );
+                },
+              )
+            : const CompleteScreen(),
         transitionType: TransitionType.fade,
       ),
     );

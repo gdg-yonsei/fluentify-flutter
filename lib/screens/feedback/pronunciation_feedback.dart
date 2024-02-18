@@ -1,5 +1,6 @@
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
+import 'package:fluentify/screens/complete.dart';
 import 'package:fluentify/screens/pending.dart';
 import 'package:fluentify/services/sentence.dart';
 import 'package:fluentify/utils/route.dart';
@@ -66,25 +67,29 @@ class _PronunciationFeedbackScreenState
   }
 
   void goNext() {
+    final nextIndex = widget.index + 1;
+
     Navigator.of(context).pushReplacement(
       generateRoute(
-        PendingScreen(
-          label: 'Case ${widget.index + 2}',
-          action: () async {
-            final sentence = await widget.sentenceService.getSentence(
-              id: widget.sentenceIds[widget.index + 1],
-            );
+        nextIndex < widget.sentenceIds.length
+            ? PendingScreen(
+                label: 'Case ${nextIndex + 1}',
+                action: () async {
+                  final sentence = await widget.sentenceService.getSentence(
+                    id: widget.sentenceIds[nextIndex],
+                  );
 
-            return sentence;
-          },
-          nextScreen: (sentence) {
-            return PronunciationFeedbackScreen(
-              sentenceIds: widget.sentenceIds,
-              index: widget.index + 1,
-              sentence: sentence,
-            );
-          },
-        ),
+                  return sentence;
+                },
+                nextScreen: (sentence) {
+                  return PronunciationFeedbackScreen(
+                    sentenceIds: widget.sentenceIds,
+                    index: nextIndex,
+                    sentence: sentence,
+                  );
+                },
+              )
+            : const CompleteScreen(),
         transitionType: TransitionType.fade,
       ),
     );
