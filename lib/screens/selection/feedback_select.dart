@@ -1,6 +1,10 @@
-import 'package:fluentify/data/samples.dart';
 import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/interfaces/sentence.pb.dart';
 import 'package:fluentify/interfaces/topic.pb.dart';
+import 'package:fluentify/repositories/scene.dart';
+import 'package:fluentify/repositories/sentence.dart';
+import 'package:fluentify/repositories/topic.dart';
 import 'package:fluentify/screens/feedback/communication_feedback.dart';
 import 'package:fluentify/screens/feedback/pronunciation_feedback.dart';
 import 'package:fluentify/screens/pending.dart';
@@ -10,9 +14,13 @@ import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackSelectScreen extends StatelessWidget {
-  final TopicDTO topic;
+  final TopicRepository topicRepository = TopicRepository();
+  final SentenceRepository sentenceRepository = SentenceRepository();
+  final SceneRepository sceneRepository = SceneRepository();
 
-  const FeedbackSelectScreen({super.key, required this.topic});
+  final String topicId;
+
+  FeedbackSelectScreen({super.key, required this.topicId});
 
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
@@ -29,17 +37,30 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    await Future.delayed(const Duration(seconds: 2));
+                    final topicResponse = await topicRepository.getTopic(
+                      GetTopicRequest(id: topicId),
+                    );
+                    final topic = topicResponse.topic;
 
-                    return sampleSentences.firstWhere(
-                      (e) => e.id == topic.sentenceIds[0],
+                    final sentenceResponse =
+                        await sentenceRepository.getSentence(
+                      GetSentenceRequest(
+                        id: topic.sentenceIds[0],
+                      ),
+                    );
+                    final sentence = sentenceResponse.sentence;
+
+                    return (topic, sentence);
+                  },
+                  nextScreen: (value) {
+                    final (topic, sentence) = value;
+
+                    return PronunciationFeedbackScreen(
+                      sentenceIds: topic.sentenceIds,
+                      index: 1,
+                      sentence: sentence,
                     );
                   },
-                  nextScreen: (sentence) => PronunciationFeedbackScreen(
-                    sentenceIds: topic.sentenceIds,
-                    index: 1,
-                    sentence: sentence,
-                  ),
                 ),
                 transitionType: TransitionType.fade,
               ),
@@ -58,17 +79,29 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    await Future.delayed(const Duration(seconds: 2));
+                    final topicResponse = await topicRepository.getTopic(
+                      GetTopicRequest(id: topicId),
+                    );
+                    final topic = topicResponse.topic;
 
-                    return sampleScenes.firstWhere(
-                      (e) => e.id == topic.sceneIds[0],
+                    final sceneResponse = await sceneRepository.getScene(
+                      GetSceneRequest(
+                        id: topic.sentenceIds[0],
+                      ),
+                    );
+                    final scene = sceneResponse.scene;
+
+                    return (topic, scene);
+                  },
+                  nextScreen: (value) {
+                    final (topic, scene) = value;
+
+                    return CommunicationFeedbackScreen(
+                      sceneIds: topic.sceneIds,
+                      index: 1,
+                      scene: scene,
                     );
                   },
-                  nextScreen: (scene) => CommunicationFeedbackScreen(
-                    sceneIds: topic.sceneIds,
-                    index: 1,
-                    scene: scene,
-                  ),
                 ),
                 transitionType: TransitionType.fade,
               ),
