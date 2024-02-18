@@ -3,7 +3,7 @@ import 'package:fluentify/interfaces/topic.pb.dart';
 
 class TopicRepository {
   // TODO: API 연동
-  Future<ListTopicsResponse> listTopics() async {
+  Future<ListTopicsResponse> listTopics(ListTopicsRequest request) async {
     await Future.delayed(const Duration(seconds: 1));
 
     return ListTopicsResponse(topics: sampleCompactTopics);
