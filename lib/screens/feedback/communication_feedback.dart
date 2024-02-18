@@ -1,7 +1,8 @@
-import 'dart:developer';
-
 import 'package:fluentify/interfaces/feedback.dart';
-import 'package:fluentify/interfaces/scene.dart';
+import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/scene.dart';
+import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/recorder.dart';
@@ -10,12 +11,14 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
-  final List<int> sceneIds;
+  final SceneService sceneService = SceneService();
+
+  final List<String> sceneIds;
 
   final int index;
-  final Scene scene;
+  final SceneDTO scene;
 
-  const CommunicationFeedbackScreen({
+  CommunicationFeedbackScreen({
     super.key,
     required this.sceneIds,
     required this.index,
@@ -63,7 +66,28 @@ class _CommunicationFeedbackScreenState
   }
 
   void goNext() {
-    log('Next step');
+    Navigator.of(context).push(
+      generateRoute(
+        PendingScreen(
+          label: 'Case ${widget.index + 1}',
+          action: () async {
+            final scene = await widget.sceneService.getScene(
+              id: widget.sceneIds[widget.index + 1],
+            );
+
+            return scene;
+          },
+          nextScreen: (scene) {
+            return CommunicationFeedbackScreen(
+              sceneIds: widget.sceneIds,
+              index: widget.index + 1,
+              scene: scene,
+            );
+          },
+        ),
+        transitionType: TransitionType.fade,
+      ),
+    );
   }
 
   @override
@@ -114,9 +138,10 @@ class _CommunicationFeedbackScreenState
                   onFinishRecord: finishRecord,
                 ),
               if (state == FeedbackState.done)
-                const SpeechBubble(
+                SpeechBubble(
                   message: "I got it! Let's go next step!",
                   edgeLocation: EdgeLocation.bottom,
+                  onTap: goNext,
                 ),
             ],
           ),

@@ -1,18 +1,24 @@
-import 'package:fluentify/data/samples.dart';
 import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/interfaces/topic.pb.dart';
 import 'package:fluentify/screens/selection/feedback_select.dart';
+import 'package:fluentify/services/topic.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class TopicSelectScreen extends StatelessWidget {
-  const TopicSelectScreen({super.key});
+  final TopicService topicService = TopicService();
 
-  Conversation _generateConversation(BuildContext context) {
+  TopicSelectScreen({super.key});
+
+  Conversation _generateConversation(
+    BuildContext context,
+    List<CompactTopicDTO> topics,
+  ) {
     return Conversation(
       question: ConversationQuestion(message: "Let's move here!"),
-      answers: sampleTopics
+      answers: topics
           .map(
             (topic) => ConversationAnswer(
               message: topic.title,
@@ -22,7 +28,7 @@ class TopicSelectScreen extends StatelessWidget {
                 await hide();
                 await navigator.push(
                   generateRoute(
-                    FeedbackSelectScreen(topic: topic),
+                    FeedbackSelectScreen(topicId: topic.id),
                     transitionType: TransitionType.none,
                   ),
                 );
@@ -39,8 +45,25 @@ class TopicSelectScreen extends StatelessWidget {
     return Scaffold(
       appBar: const FluentifyAppBar(),
       body: SafeArea(
-        child: ConversationScaffold(
-          conversation: _generateConversation(context),
+        child: FutureBuilder(
+          future: topicService.listTopics(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ConversationScaffold(
+                conversation: _generateConversation(
+                  context,
+                  snapshot.data!,
+                ),
+              );
+            }
+
+            return ConversationScaffold(
+              conversation: Conversation(
+                question: ConversationQuestion(message: "Finding cases..."),
+                answers: [],
+              ),
+            );
+          },
         ),
       ),
     );
