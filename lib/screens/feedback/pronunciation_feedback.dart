@@ -1,7 +1,8 @@
-import 'dart:developer';
-
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
+import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/sentence.dart';
+import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/recorder.dart';
@@ -10,12 +11,14 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
+  final SentenceService sentenceService = SentenceService();
+
   final List<String> sentenceIds;
 
   final int index;
   final SentenceDTO sentence;
 
-  const PronunciationFeedbackScreen({
+  PronunciationFeedbackScreen({
     super.key,
     required this.sentenceIds,
     required this.index,
@@ -63,7 +66,28 @@ class _PronunciationFeedbackScreenState
   }
 
   void goNext() {
-    log('Next step');
+    Navigator.of(context).push(
+      generateRoute(
+        PendingScreen(
+          label: 'Case ${widget.index + 1}',
+          action: () async {
+            final sentence = await widget.sentenceService.getSentence(
+              id: widget.sentenceIds[widget.index + 1],
+            );
+
+            return sentence;
+          },
+          nextScreen: (sentence) {
+            return PronunciationFeedbackScreen(
+              sentenceIds: widget.sentenceIds,
+              index: widget.index + 1,
+              sentence: sentence,
+            );
+          },
+        ),
+        transitionType: TransitionType.fade,
+      ),
+    );
   }
 
   @override
@@ -107,9 +131,10 @@ class _PronunciationFeedbackScreenState
                   onFinishRecord: finishRecord,
                 ),
               if (state == FeedbackState.done)
-                const SpeechBubble(
+                SpeechBubble(
                   message: "I got it! Let's go next step!",
                   edgeLocation: EdgeLocation.bottom,
+                  onTap: goNext,
                 ),
             ],
           ),
