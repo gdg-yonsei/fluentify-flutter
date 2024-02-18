@@ -46,7 +46,7 @@ class FeedbackSelectScreen extends StatelessWidget {
 
                     return PronunciationFeedbackScreen(
                       sentenceIds: topic.sentenceIds,
-                      index: 1,
+                      index: 0,
                       sentence: sentence,
                     );
                   },
@@ -70,7 +70,7 @@ class FeedbackSelectScreen extends StatelessWidget {
                   action: () async {
                     final topic = await topicService.getTopic(id: topicId);
                     final scene = await sceneService.getScene(
-                      id: topic.sentenceIds[0],
+                      id: topic.sceneIds[0],
                     );
 
                     return (topic, scene);
@@ -80,7 +80,7 @@ class FeedbackSelectScreen extends StatelessWidget {
 
                     return CommunicationFeedbackScreen(
                       sceneIds: topic.sceneIds,
-                      index: 1,
+                      index: 0,
                       scene: scene,
                     );
                   },

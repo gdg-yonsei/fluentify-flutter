@@ -9,7 +9,7 @@ class FeedbackRepository {
     return GetPronunciationFeedbackResponse(
       pronunciationFeeback: PronunciationFeedbackDTO(
         sentenceId: request.sentenceId,
-        incorrectIndexes: [1, 3, 25, 26],
+        incorrectIndexes: [1, 3, 4, 10],
         pronunciationScore: 4,
         volumeScore: 3,
         speedScore: 2,

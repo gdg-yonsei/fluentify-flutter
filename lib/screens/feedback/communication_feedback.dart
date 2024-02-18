@@ -1,17 +1,23 @@
+import 'dart:developer';
+
 import 'package:fluentify/interfaces/feedback.dart';
+import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/screens/complete.dart';
 import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/feedback.dart';
 import 'package:fluentify/services/scene.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
-import 'package:fluentify/widgets/common/recorder.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
+import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
   final SceneService sceneService = SceneService();
+  final FeedbackService feedbackService = FeedbackService();
 
   final List<String> sceneIds;
 
@@ -25,19 +31,6 @@ class CommunicationFeedbackScreen extends StatefulWidget {
     required this.scene,
   });
 
-  String _generateGuide(FeedbackState state) {
-    switch (state) {
-      case FeedbackState.ready:
-        return 'Press the record button and answer the question with the image below!';
-      case FeedbackState.recording:
-        return "Now I'm listening!";
-      case FeedbackState.evaluating:
-        return "Wait a second! I'm evaluating your pronunciation.";
-      case FeedbackState.done:
-        return 'Perfect!';
-    }
-  }
-
   @override
   State<CommunicationFeedbackScreen> createState() =>
       _CommunicationFeedbackScreenState();
@@ -46,45 +39,48 @@ class CommunicationFeedbackScreen extends StatefulWidget {
 class _CommunicationFeedbackScreenState
     extends State<CommunicationFeedbackScreen> {
   FeedbackState state = FeedbackState.ready;
+  late CommunicationFeedbackDTO feedback;
 
-  void startRecord() {
-    setState(() {
-      state = FeedbackState.recording;
-    });
-  }
+  void finishRecord(String audioPath) async {
+    log('audio path : $audioPath');
 
-  void finishRecord() {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        state = FeedbackState.done;
-      });
+    feedback = await widget.feedbackService.getCommunicationFeedback(
+      sceneId: widget.scene.id,
+    );
+
+    setState(() {
+      state = FeedbackState.done;
     });
   }
 
   void goNext() {
-    Navigator.of(context).push(
-      generateRoute(
-        PendingScreen(
-          label: 'Case ${widget.index + 1}',
-          action: () async {
-            final scene = await widget.sceneService.getScene(
-              id: widget.sceneIds[widget.index + 1],
-            );
+    final nextIndex = widget.index + 1;
 
-            return scene;
-          },
-          nextScreen: (scene) {
-            return CommunicationFeedbackScreen(
-              sceneIds: widget.sceneIds,
-              index: widget.index + 1,
-              scene: scene,
-            );
-          },
-        ),
+    Navigator.of(context).pushReplacement(
+      generateRoute(
+        nextIndex < widget.sceneIds.length
+            ? PendingScreen(
+                label: 'Case ${nextIndex + 1}',
+                action: () async {
+                  final scene = await widget.sceneService.getScene(
+                    id: widget.sceneIds[nextIndex],
+                  );
+
+                  return scene;
+                },
+                nextScreen: (scene) {
+                  return CommunicationFeedbackScreen(
+                    sceneIds: widget.sceneIds,
+                    index: nextIndex,
+                    scene: scene,
+                  );
+                },
+              )
+            : const CompleteScreen(),
         transitionType: TransitionType.fade,
       ),
     );
@@ -95,9 +91,9 @@ class _CommunicationFeedbackScreenState
     return Scaffold(
       appBar: FluentifyAppBar(
         title: Hero(
-          tag: 'Case ${widget.index}',
+          tag: 'Case ${widget.index + 1}',
           child: Text(
-            'Case ${widget.index}',
+            'Case ${widget.index + 1}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -113,30 +109,40 @@ class _CommunicationFeedbackScreenState
             children: [
               const Avatar(),
               const SizedBox(height: 30),
-              SpeechBubble(
-                message: widget._generateGuide(state),
-                edgeLocation: EdgeLocation.top,
-              ),
-              const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image(
-                  image: NetworkImage(widget.scene.imageUrl),
+              if (state == FeedbackState.ready) ...[
+                const SpeechBubble(
+                  message:
+                      'Press the record button and answer the question with the image below!',
+                  edgeLocation: EdgeLocation.top,
                 ),
-              ),
-              const SizedBox(height: 10),
-              SpeechBubble(message: '"${widget.scene.question}"'),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image(
+                    image: NetworkImage(widget.scene.imageUrl),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SpeechBubble(message: '"${widget.scene.question}"'),
+              ],
+              if (state == FeedbackState.evaluating) ...[
+                const SpeechBubble(
+                  message: "Wait a second!\nI'm evaluating your speech.",
+                  edgeLocation: EdgeLocation.top,
+                ),
+              ],
+              if (state == FeedbackState.done) ...[
+                SpeechBubble(
+                  message: feedback.overallFeedback,
+                  edgeLocation: EdgeLocation.top,
+                ),
+              ],
             ],
           ),
           bottom: Column(
             children: [
-              if (state == FeedbackState.ready ||
-                  state == FeedbackState.recording)
-                Recorder(
-                  isRecording: state == FeedbackState.recording,
-                  onStartRecord: startRecord,
-                  onFinishRecord: finishRecord,
-                ),
+              if (state == FeedbackState.ready)
+                Recorder(onFinishRecord: finishRecord),
               if (state == FeedbackState.done)
                 SpeechBubble(
                   message: "I got it! Let's go next step!",

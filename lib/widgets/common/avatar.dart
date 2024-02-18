@@ -10,10 +10,10 @@ class Avatar extends StatefulWidget {
 class _AvatarState extends State<Avatar> {
   @override
   Widget build(BuildContext context) {
-    return const Icon(
-      Icons.sentiment_satisfied_outlined,
-      size: 100,
-      color: Colors.white,
+    return Image.asset(
+      'assets/image-avatar.png',
+      width: 150,
+      height: 150,
     );
   }
 }
