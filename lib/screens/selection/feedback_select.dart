@@ -1,6 +1,6 @@
 import 'package:fluentify/data/samples.dart';
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/interfaces/topic.dart';
+import 'package:fluentify/interfaces/topic.pb.dart';
 import 'package:fluentify/screens/feedback/communication_feedback.dart';
 import 'package:fluentify/screens/feedback/pronunciation_feedback.dart';
 import 'package:fluentify/screens/pending.dart';
@@ -10,7 +10,7 @@ import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackSelectScreen extends StatelessWidget {
-  final Topic topic;
+  final TopicDTO topic;
 
   const FeedbackSelectScreen({super.key, required this.topic});
 

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:fluentify/interfaces/feedback.dart';
-import 'package:fluentify/interfaces/sentence.dart';
+import 'package:fluentify/interfaces/sentence.pb.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/recorder.dart';
@@ -10,10 +10,10 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
-  final List<int> sentenceIds;
+  final List<String> sentenceIds;
 
   final int index;
-  final Sentence sentence;
+  final SentenceDTO sentence;
 
   const PronunciationFeedbackScreen({
     super.key,

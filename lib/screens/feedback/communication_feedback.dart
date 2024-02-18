@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:fluentify/interfaces/feedback.dart';
-import 'package:fluentify/interfaces/scene.dart';
+import 'package:fluentify/interfaces/scene.pb.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/recorder.dart';
@@ -10,10 +10,10 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:flutter/material.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
-  final List<int> sceneIds;
+  final List<String> sceneIds;
 
   final int index;
-  final Scene scene;
+  final SceneDTO scene;
 
   const CommunicationFeedbackScreen({
     super.key,
