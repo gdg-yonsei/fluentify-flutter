@@ -1,7 +1,6 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/screens/history.dart';
 import 'package:fluentify/screens/selection/topic_select.dart';
-import 'package:fluentify/screens/settings.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
@@ -36,16 +35,6 @@ class HomeScreen extends StatelessWidget {
 
             await hide();
             await navigator.push(generateRoute(const HistoryScreen()));
-            await show();
-          },
-        ),
-        ConversationAnswer(
-          message: "I need to reset my configuration.",
-          onAnswer: (hide, show) async {
-            final navigator = Navigator.of(context);
-
-            await hide();
-            await navigator.push(generateRoute(const SettingsScreen()));
             await show();
           },
         ),

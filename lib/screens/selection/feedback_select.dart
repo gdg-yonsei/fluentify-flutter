@@ -1,22 +1,19 @@
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/interfaces/scene.pb.dart';
-import 'package:fluentify/interfaces/sentence.pb.dart';
-import 'package:fluentify/interfaces/topic.pb.dart';
-import 'package:fluentify/repositories/scene.dart';
-import 'package:fluentify/repositories/sentence.dart';
-import 'package:fluentify/repositories/topic.dart';
 import 'package:fluentify/screens/feedback/communication_feedback.dart';
 import 'package:fluentify/screens/feedback/pronunciation_feedback.dart';
 import 'package:fluentify/screens/pending.dart';
+import 'package:fluentify/services/scene.dart';
+import 'package:fluentify/services/sentence.dart';
+import 'package:fluentify/services/topic.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackSelectScreen extends StatelessWidget {
-  final TopicRepository topicRepository = TopicRepository();
-  final SentenceRepository sentenceRepository = SentenceRepository();
-  final SceneRepository sceneRepository = SceneRepository();
+  final TopicService topicService = TopicService();
+  final SentenceService sentenceService = SentenceService();
+  final SceneService sceneService = SceneService();
 
   final String topicId;
 
@@ -37,18 +34,10 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    final topicResponse = await topicRepository.getTopic(
-                      GetTopicRequest(id: topicId),
+                    final topic = await topicService.getTopic(id: topicId);
+                    final sentence = await sentenceService.getSentence(
+                      id: topic.sentenceIds[0],
                     );
-                    final topic = topicResponse.topic;
-
-                    final sentenceResponse =
-                        await sentenceRepository.getSentence(
-                      GetSentenceRequest(
-                        id: topic.sentenceIds[0],
-                      ),
-                    );
-                    final sentence = sentenceResponse.sentence;
 
                     return (topic, sentence);
                   },
@@ -79,17 +68,10 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    final topicResponse = await topicRepository.getTopic(
-                      GetTopicRequest(id: topicId),
+                    final topic = await topicService.getTopic(id: topicId);
+                    final scene = await sceneService.getScene(
+                      id: topic.sentenceIds[0],
                     );
-                    final topic = topicResponse.topic;
-
-                    final sceneResponse = await sceneRepository.getScene(
-                      GetSceneRequest(
-                        id: topic.sentenceIds[0],
-                      ),
-                    );
-                    final scene = sceneResponse.scene;
 
                     return (topic, scene);
                   },

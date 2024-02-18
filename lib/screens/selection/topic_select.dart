@@ -1,14 +1,14 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/interfaces/topic.pb.dart';
-import 'package:fluentify/repositories/topic.dart';
 import 'package:fluentify/screens/selection/feedback_select.dart';
+import 'package:fluentify/services/topic.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class TopicSelectScreen extends StatelessWidget {
-  final TopicRepository topicRepository = TopicRepository();
+  final TopicService topicService = TopicService();
 
   TopicSelectScreen({super.key});
 
@@ -46,18 +46,23 @@ class TopicSelectScreen extends StatelessWidget {
       appBar: const FluentifyAppBar(),
       body: SafeArea(
         child: FutureBuilder(
-          future: topicRepository.listTopics(),
+          future: topicService.listTopics(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ConversationScaffold(
                 conversation: _generateConversation(
                   context,
-                  snapshot.data!.topics,
+                  snapshot.data!,
                 ),
               );
             }
 
-            return const CircularProgressIndicator();
+            return ConversationScaffold(
+              conversation: Conversation(
+                question: ConversationQuestion(message: "Finding cases..."),
+                answers: [],
+              ),
+            );
           },
         ),
       ),
