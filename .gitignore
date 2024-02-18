@@ -32,6 +32,12 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Buf related
+*.pb.dart
+*.pbenum.dart
+*.pbjson.dart
+*.pbserver.dart
+
 # Symbolication related
 app.*.symbols
 
