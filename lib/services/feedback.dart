@@ -6,10 +6,11 @@ class FeedbackService {
 
   Future<PronunciationFeedbackDTO> getPronunciationFeedback({
     required String sentenceId,
+    required String audioFileUrl,
   }) async {
     final request = GetPronunciationFeedbackRequest(
       sentenceId: sentenceId,
-      audioFileUrl: '',
+      audioFileUrl: audioFileUrl,
     );
     final response = await feedbackRepository.getPronunciationFeedback(request);
 
@@ -18,10 +19,11 @@ class FeedbackService {
 
   Future<CommunicationFeedbackDTO> getCommunicationFeedback({
     required String sceneId,
+    required String audioFileUrl,
   }) async {
     final request = GetCommunicationFeedbackRequest(
       sceneId: sceneId,
-      audioFileUrl: '',
+      audioFileUrl: audioFileUrl,
     );
     final response = await feedbackRepository.getCommunicationFeedback(request);
 

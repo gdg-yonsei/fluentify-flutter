@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:uuid/uuid.dart';
 
 class Recorder extends StatefulWidget {
   final AudioRecorder recorder = AudioRecorder();
@@ -34,9 +36,12 @@ class _RecorderState extends State<Recorder> {
   }
 
   void startRecord() async {
+    final temporaryDirectory = await getTemporaryDirectory();
+    final audioName = '${const Uuid().v4()}.m4a';
+
     await widget.recorder.start(
-      const RecordConfig(encoder: AudioEncoder.wav),
-      path: 'sample.wav',
+      const RecordConfig(encoder: AudioEncoder.pcm16bits),
+      path: '${temporaryDirectory.path}/$audioName',
     );
 
     setState(() {
