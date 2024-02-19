@@ -1,15 +1,15 @@
-import 'package:fluentify/data/sentences.dart';
+import 'package:dio/dio.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
 
 class SentenceRepository {
-  // TODO: API 연동
-  Future<GetSentenceResponse> getSentence(GetSentenceRequest request) async {
-    await Future.delayed(const Duration(seconds: 1));
+  final Dio dio = Dio(BaseOptions(baseUrl: 'http://api.fluentify.dev'));
 
-    return GetSentenceResponse(
-      sentence: sampleSentences.firstWhere(
-        (sentence) => sentence.id == request.id,
-      ),
+  Future<GetSentenceResponse> getSentence(GetSentenceRequest request) async {
+    final response = await dio.post(
+      '/GetSentence',
+      data: request.toProto3Json(),
     );
+
+    return GetSentenceResponse.create()..mergeFromProto3Json(response.data);
   }
 }
