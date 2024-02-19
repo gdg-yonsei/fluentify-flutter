@@ -1,5 +1,6 @@
-import 'dart:developer';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
@@ -15,6 +16,7 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:fluentify/widgets/feedback/corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
   final SentenceService sentenceService = SentenceService();
@@ -42,19 +44,29 @@ class _PronunciationFeedbackScreenState
   late PronunciationFeedbackDTO feedback;
 
   void finishRecord(String audioPath) async {
-    log('audio path : $audioPath');
-
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    feedback = await widget.feedbackService.getPronunciationFeedback(
-      sentenceId: widget.sentence.id,
-    );
+    final storageRef = FirebaseStorage.instance.ref();
+    final targetRef = storageRef.child('user-upload/${const Uuid().v4()}.m4a');
 
-    setState(() {
-      state = FeedbackState.done;
-    });
+    try {
+      final audioFile = File(audioPath);
+      await targetRef.putFile(audioFile);
+
+      feedback = await widget.feedbackService.getPronunciationFeedback(
+        sentenceId: widget.sentence.id,
+      );
+
+      setState(() {
+        state = FeedbackState.done;
+      });
+    } catch (e) {
+      setState(() {
+        state = FeedbackState.ready;
+      });
+    }
   }
 
   void goNext() {
