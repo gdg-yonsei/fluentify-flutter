@@ -1,20 +1,16 @@
-import 'package:fluentify/data/topics.dart';
 import 'package:fluentify/interfaces/topic.pb.dart';
+import 'package:fluentify/utils/client.dart';
 
 class TopicRepository {
-  // TODO: API 연동
   Future<ListTopicsResponse> listTopics(ListTopicsRequest request) async {
-    await Future.delayed(const Duration(seconds: 1));
+    final response = await dio.post('/ListTopics');
 
-    return ListTopicsResponse(topics: sampleCompactTopics);
+    return ListTopicsResponse.create()..mergeFromProto3Json(response.data);
   }
 
-  // TODO: API 연동
   Future<GetTopicResponse> getTopic(GetTopicRequest request) async {
-    await Future.delayed(const Duration(seconds: 1));
+    final response = await dio.post('/GetTopic', data: request.toProto3Json());
 
-    return GetTopicResponse(
-      topic: sampleTopics.firstWhere((topic) => topic.id == request.id),
-    );
+    return GetTopicResponse.create()..mergeFromProto3Json(response.data);
   }
 }

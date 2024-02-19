@@ -1,15 +1,10 @@
-import 'package:fluentify/data/scenes.dart';
 import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/utils/client.dart';
 
 class SceneRepository {
-  // TODO: API 연동
   Future<GetSceneResponse> getScene(GetSceneRequest request) async {
-    await Future.delayed(const Duration(seconds: 1));
+    final response = await dio.post('/GetScene', data: request.toProto3Json());
 
-    return GetSceneResponse(
-      scene: sampleScenes.firstWhere(
-        (scene) => scene.id == request.id,
-      ),
-    );
+    return GetSceneResponse.create()..mergeFromProto3Json(response.data);
   }
 }

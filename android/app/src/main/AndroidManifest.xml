@@ -2,6 +2,7 @@
     package="com.quantumvortex.fluentify">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
    <application
         android:label="fluentify"
