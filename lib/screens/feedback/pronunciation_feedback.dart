@@ -53,10 +53,11 @@ class _PronunciationFeedbackScreenState
 
     try {
       final audioFile = File(audioPath);
-      await targetRef.putFile(audioFile);
+      final audioRef = await targetRef.putFile(audioFile);
 
       feedback = await widget.feedbackService.getPronunciationFeedback(
         sentenceId: widget.sentence.id,
+        audioFileUrl: await audioRef.ref.getDownloadURL(),
       );
 
       setState(() {

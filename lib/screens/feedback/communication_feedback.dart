@@ -53,10 +53,11 @@ class _CommunicationFeedbackScreenState
 
     try {
       final audioFile = File(audioPath);
-      await targetRef.putFile(audioFile);
+      final audioRef = await targetRef.putFile(audioFile);
 
       feedback = await widget.feedbackService.getCommunicationFeedback(
         sceneId: widget.scene.id,
+        audioFileUrl: await audioRef.ref.getDownloadURL(),
       );
 
       setState(() {
