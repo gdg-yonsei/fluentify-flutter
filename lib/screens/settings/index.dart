@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/services/user.dart';
+import 'package:fluentify/screens/settings/avatar.dart';
+import 'package:fluentify/screens/settings/user.dart';
+import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +15,23 @@ class SettingsScreen extends StatelessWidget {
       question: ConversationQuestion(message: 'What do you want to do?'),
       answers: [
         ConversationAnswer(
-          message: "User Test",
+          message: "I want to manage my avatar.",
           onAnswer: (hide, show) async {
-            final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+            final navigator = Navigator.of(context);
 
-            final user = await UserService.getUser(id: uid);
-            log('User : ${user.id}, ${user.name}, ${user.age}');
+            await hide();
+            await navigator.push(generateRoute(const UserSettingScreen()));
+            await show();
+          },
+        ),
+        ConversationAnswer(
+          message: "I want to manage your avatar.",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
+
+            await hide();
+            await navigator.push(generateRoute(const AvatarSettingScreen()));
+            await show();
           },
         ),
         ConversationAnswer(

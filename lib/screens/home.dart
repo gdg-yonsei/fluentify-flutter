@@ -1,6 +1,6 @@
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/selection/topic_select.dart';
-import 'package:fluentify/screens/settings.dart';
+import 'package:fluentify/screens/selection/topic.dart';
+import 'package:fluentify/screens/settings/index.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';

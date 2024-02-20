@@ -3,42 +3,42 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluentify/interfaces/feedback.dart';
 import 'package:fluentify/interfaces/feedback.pb.dart';
-import 'package:fluentify/interfaces/sentence.pb.dart';
-import 'package:fluentify/screens/complete.dart';
+import 'package:fluentify/interfaces/scene.pb.dart';
+import 'package:fluentify/screens/feedback/complete.dart';
 import 'package:fluentify/screens/pending.dart';
 import 'package:fluentify/services/feedback.dart';
-import 'package:fluentify/services/sentence.dart';
+import 'package:fluentify/services/scene.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
-import 'package:fluentify/widgets/feedback/corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-class PronunciationFeedbackScreen extends StatefulWidget {
-  final List<String> sentenceIds;
-  final int index;
-  final SentenceDTO sentence;
+class CommunicationFeedbackScreen extends StatefulWidget {
+  final List<String> sceneIds;
 
-  const PronunciationFeedbackScreen({
+  final int index;
+  final SceneDTO scene;
+
+  const CommunicationFeedbackScreen({
     super.key,
-    required this.sentenceIds,
+    required this.sceneIds,
     required this.index,
-    required this.sentence,
+    required this.scene,
   });
 
   @override
-  State<PronunciationFeedbackScreen> createState() =>
-      _PronunciationFeedbackScreenState();
+  State<CommunicationFeedbackScreen> createState() =>
+      _CommunicationFeedbackScreenState();
 }
 
-class _PronunciationFeedbackScreenState
-    extends State<PronunciationFeedbackScreen> {
+class _CommunicationFeedbackScreenState
+    extends State<CommunicationFeedbackScreen> {
   FeedbackState state = FeedbackState.ready;
-  late PronunciationFeedbackDTO feedback;
+  late CommunicationFeedbackDTO feedback;
 
   void finishRecord(String audioPath) async {
     setState(() {
@@ -52,8 +52,8 @@ class _PronunciationFeedbackScreenState
       final audioFile = File(audioPath);
       final audioRef = await targetRef.putFile(audioFile);
 
-      feedback = await FeedbackService.getPronunciationFeedback(
-        sentenceId: widget.sentence.id,
+      feedback = await FeedbackService.getCommunicationFeedback(
+        sceneId: widget.scene.id,
         audioFileUrl: await audioRef.ref.getDownloadURL(),
       );
 
@@ -72,25 +72,25 @@ class _PronunciationFeedbackScreenState
 
     Navigator.of(context).pushReplacement(
       generateRoute(
-        nextIndex < widget.sentenceIds.length
+        nextIndex < widget.sceneIds.length
             ? PendingScreen(
                 label: 'Case ${nextIndex + 1}',
                 action: () async {
-                  final sentence = await SentenceService.getSentence(
-                    id: widget.sentenceIds[nextIndex],
+                  final scene = await SceneService.getScene(
+                    id: widget.sceneIds[nextIndex],
                   );
 
-                  return sentence;
+                  return scene;
                 },
-                nextScreen: (sentence) {
-                  return PronunciationFeedbackScreen(
-                    sentenceIds: widget.sentenceIds,
+                nextScreen: (scene) {
+                  return CommunicationFeedbackScreen(
+                    sceneIds: widget.sceneIds,
                     index: nextIndex,
-                    sentence: sentence,
+                    scene: scene,
                   );
                 },
               )
-            : const CompleteScreen(),
+            : const FeedbackCompleteScreen(),
         transitionType: TransitionType.fade,
       ),
     );
@@ -122,15 +122,22 @@ class _PronunciationFeedbackScreenState
               if (state == FeedbackState.ready) ...[
                 const SpeechBubble(
                   message:
-                      'Press the record button and say the sentence below!',
+                      'Press the record button and answer the question with the image below!',
                   edgeLocation: EdgeLocation.top,
                 ),
                 const SizedBox(height: 10),
-                SpeechBubble(message: '"${widget.sentence.text}"'),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image(
+                    image: NetworkImage(widget.scene.imageUrl),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SpeechBubble(message: '"${widget.scene.question}"'),
               ],
               if (state == FeedbackState.evaluating) ...[
                 const SpeechBubble(
-                  message: "Wait a second!\nI'm evaluating your pronunciation.",
+                  message: "Wait a second!\nI'm evaluating your speech.",
                   edgeLocation: EdgeLocation.top,
                 ),
               ],
@@ -138,16 +145,6 @@ class _PronunciationFeedbackScreenState
                 SpeechBubble(
                   message: feedback.overallFeedback,
                   edgeLocation: EdgeLocation.top,
-                ),
-                const SizedBox(height: 10),
-                const SpeechBubble(
-                  message:
-                      'The below one is the corrected version of your speech.',
-                ),
-                const SizedBox(height: 10),
-                Corrector(
-                  text: widget.sentence.text,
-                  incorrectIndexes: feedback.incorrectIndexes,
                 ),
               ],
             ],

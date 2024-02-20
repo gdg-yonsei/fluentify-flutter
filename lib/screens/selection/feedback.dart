@@ -1,6 +1,6 @@
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/feedback/communication_feedback.dart';
-import 'package:fluentify/screens/feedback/pronunciation_feedback.dart';
+import 'package:fluentify/screens/feedback/communication.dart';
+import 'package:fluentify/screens/feedback/pronunciation.dart';
 import 'package:fluentify/screens/pending.dart';
 import 'package:fluentify/services/scene.dart';
 import 'package:fluentify/services/sentence.dart';

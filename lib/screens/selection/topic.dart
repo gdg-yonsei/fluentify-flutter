@@ -1,6 +1,6 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/interfaces/topic.pb.dart';
-import 'package:fluentify/screens/selection/feedback_select.dart';
+import 'package:fluentify/screens/selection/feedback.dart';
 import 'package:fluentify/services/topic.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
