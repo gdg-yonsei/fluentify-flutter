@@ -16,7 +16,6 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:fluentify/widgets/feedback/corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
   final List<String> sentenceIds;
@@ -46,7 +45,7 @@ class _PronunciationFeedbackScreenState
     });
 
     final storageRef = FirebaseStorage.instance.ref();
-    final targetRef = storageRef.child('user-upload/${const Uuid().v4()}.m4a');
+    final targetRef = storageRef.child('audio/${audioPath.split('/').last}');
 
     try {
       final audioFile = File(audioPath);

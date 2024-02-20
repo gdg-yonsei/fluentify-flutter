@@ -1,35 +1,32 @@
 import 'package:fluentify/interfaces/feedback.pb.dart';
+import 'package:fluentify/utils/api.dart';
 
 class FeedbackRepository {
-  // TODO: API 연동
   static Future<GetPronunciationFeedbackResponse> getPronunciationFeedback(
     GetPronunciationFeedbackRequest request,
   ) async {
-    await Future.delayed(const Duration(seconds: 5));
+    final client = await API.getAuthenticatedClient();
 
-    return GetPronunciationFeedbackResponse(
-      pronunciationFeedback: PronunciationFeedbackDTO(
-        sentenceId: request.sentenceId,
-        incorrectIndexes: [1, 3, 4, 10],
-        pronunciationScore: 4,
-        volumeScore: 3,
-        speedScore: 2,
-        overallFeedback: 'Good!',
-      ),
+    final response = await client.post(
+      '/GetPronunciationFeedback',
+      data: request.toProto3Json(),
     );
+
+    return GetPronunciationFeedbackResponse.create()
+      ..mergeFromProto3Json(response.data);
   }
 
-  // TODO: API 연동
   static Future<GetCommunicationFeedbackResponse> getCommunicationFeedback(
     GetCommunicationFeedbackRequest request,
   ) async {
-    await Future.delayed(const Duration(seconds: 5));
+    final client = await API.getAuthenticatedClient();
 
-    return GetCommunicationFeedbackResponse(
-      communicationFeedback: CommunicationFeedbackDTO(
-        sceneId: request.sceneId,
-        overallFeedback: 'Great!',
-      ),
+    final response = await client.post(
+      '/GetCommunicationFeedback',
+      data: request.toProto3Json(),
     );
+
+    return GetCommunicationFeedbackResponse.create()
+      ..mergeFromProto3Json(response.data);
   }
 }
