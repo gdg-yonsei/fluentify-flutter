@@ -89,7 +89,9 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
                 child: SpeechBubble(
                   message: 'This is me!',
                   edgeLocation: EdgeLocation.bottom,
-                  onTap: () => updateUser,
+                  onTap: () {
+                    updateUser();
+                  },
                 ),
               ),
             ],
