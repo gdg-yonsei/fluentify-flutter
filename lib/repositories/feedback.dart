@@ -2,12 +2,13 @@ import 'package:fluentify/interfaces/feedback.pb.dart';
 
 class FeedbackRepository {
   // TODO: API 연동
-  Future<GetPronunciationFeedbackResponse> getPronunciationFeedback(
-      GetPronunciationFeedbackRequest request) async {
+  static Future<GetPronunciationFeedbackResponse> getPronunciationFeedback(
+    GetPronunciationFeedbackRequest request,
+  ) async {
     await Future.delayed(const Duration(seconds: 5));
 
     return GetPronunciationFeedbackResponse(
-      pronunciationFeeback: PronunciationFeedbackDTO(
+      pronunciationFeedback: PronunciationFeedbackDTO(
         sentenceId: request.sentenceId,
         incorrectIndexes: [1, 3, 4, 10],
         pronunciationScore: 4,
@@ -19,8 +20,9 @@ class FeedbackRepository {
   }
 
   // TODO: API 연동
-  Future<GetCommunicationFeedbackResponse> getCommunicationFeedback(
-      GetCommunicationFeedbackRequest request) async {
+  static Future<GetCommunicationFeedbackResponse> getCommunicationFeedback(
+    GetCommunicationFeedbackRequest request,
+  ) async {
     await Future.delayed(const Duration(seconds: 5));
 
     return GetCommunicationFeedbackResponse(

@@ -1,24 +1,27 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class AvatarSettingScreen extends StatelessWidget {
+  const AvatarSettingScreen({super.key});
 
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
-      question: ConversationQuestion(message: 'What do you want to do?'),
+      question: ConversationQuestion(message: "I'll be your best friend!"),
       answers: [
         ConversationAnswer(
-          message: "I want to log out.",
+          message: "I want to hear my parent's voice from you.",
           onAnswer: (hide, show) async {
-            final navigator = Navigator.of(context);
-
-            await FirebaseAuth.instance.signOut();
-
-            navigator.popUntil((route) => route.isFirst);
+            showDialog(
+              context: context,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text('TODO'),
+                  content: Text('Not implemented yet!'),
+                );
+              },
+            );
           },
         ),
       ],

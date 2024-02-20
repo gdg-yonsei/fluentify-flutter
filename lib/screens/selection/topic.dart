@@ -1,6 +1,6 @@
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/interfaces/topic.pb.dart';
-import 'package:fluentify/screens/selection/feedback_select.dart';
+import 'package:fluentify/screens/selection/feedback.dart';
 import 'package:fluentify/services/topic.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -8,9 +8,7 @@ import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class TopicSelectScreen extends StatelessWidget {
-  final TopicService topicService = TopicService();
-
-  TopicSelectScreen({super.key});
+  const TopicSelectScreen({super.key});
 
   Conversation _generateConversation(
     BuildContext context,
@@ -46,7 +44,7 @@ class TopicSelectScreen extends StatelessWidget {
       appBar: const FluentifyAppBar(),
       body: SafeArea(
         child: FutureBuilder(
-          future: topicService.listTopics(),
+          future: TopicService.listTopics(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ConversationScaffold(

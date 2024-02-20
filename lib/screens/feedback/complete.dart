@@ -5,8 +5,8 @@ import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-class CompleteScreen extends StatelessWidget {
-  const CompleteScreen({super.key});
+class FeedbackCompleteScreen extends StatelessWidget {
+  const FeedbackCompleteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

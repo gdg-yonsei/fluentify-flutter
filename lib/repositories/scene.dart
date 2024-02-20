@@ -1,9 +1,14 @@
 import 'package:fluentify/interfaces/scene.pb.dart';
-import 'package:fluentify/utils/client.dart';
+import 'package:fluentify/utils/api.dart';
 
 class SceneRepository {
-  Future<GetSceneResponse> getScene(GetSceneRequest request) async {
-    final response = await dio.post('/GetScene', data: request.toProto3Json());
+  static Future<GetSceneResponse> getScene(GetSceneRequest request) async {
+    final client = await API.getAuthenticatedClient();
+
+    final response = await client.post(
+      '/GetScene',
+      data: request.toProto3Json(),
+    );
 
     return GetSceneResponse.create()..mergeFromProto3Json(response.data);
   }

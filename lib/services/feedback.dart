@@ -2,9 +2,7 @@ import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/repositories/feedback.dart';
 
 class FeedbackService {
-  final FeedbackRepository feedbackRepository = FeedbackRepository();
-
-  Future<PronunciationFeedbackDTO> getPronunciationFeedback({
+  static Future<PronunciationFeedbackDTO> getPronunciationFeedback({
     required String sentenceId,
     required String audioFileUrl,
   }) async {
@@ -12,12 +10,12 @@ class FeedbackService {
       sentenceId: sentenceId,
       audioFileUrl: audioFileUrl,
     );
-    final response = await feedbackRepository.getPronunciationFeedback(request);
+    final response = await FeedbackRepository.getPronunciationFeedback(request);
 
-    return response.pronunciationFeeback;
+    return response.pronunciationFeedback;
   }
 
-  Future<CommunicationFeedbackDTO> getCommunicationFeedback({
+  static Future<CommunicationFeedbackDTO> getCommunicationFeedback({
     required String sceneId,
     required String audioFileUrl,
   }) async {
@@ -25,7 +23,7 @@ class FeedbackService {
       sceneId: sceneId,
       audioFileUrl: audioFileUrl,
     );
-    final response = await feedbackRepository.getCommunicationFeedback(request);
+    final response = await FeedbackRepository.getCommunicationFeedback(request);
 
     return response.communicationFeedback;
   }

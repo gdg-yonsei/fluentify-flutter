@@ -1,9 +1,13 @@
 import 'package:fluentify/interfaces/sentence.pb.dart';
-import 'package:fluentify/utils/client.dart';
+import 'package:fluentify/utils/api.dart';
 
 class SentenceRepository {
-  Future<GetSentenceResponse> getSentence(GetSentenceRequest request) async {
-    final response = await dio.post(
+  static Future<GetSentenceResponse> getSentence(
+    GetSentenceRequest request,
+  ) async {
+    final client = await API.getAuthenticatedClient();
+
+    final response = await client.post(
       '/GetSentence',
       data: request.toProto3Json(),
     );

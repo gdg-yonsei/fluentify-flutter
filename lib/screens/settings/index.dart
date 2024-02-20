@@ -1,80 +1,61 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
-import 'package:fluentify/screens/selection/topic.dart';
-import 'package:fluentify/screens/settings/index.dart';
-import 'package:fluentify/services/user.dart';
+import 'package:fluentify/screens/settings/avatar.dart';
+import 'package:fluentify/screens/settings/user.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-
-  String? userName;
-
-  Future<void> loadUser() async {
-    final user = await UserService.getUser(id: uid);
-
-    setState(() {
-      userName = user.name;
-    });
-  }
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
   Conversation _generateConversation(BuildContext context) {
-    final greeting = userName != null ? 'Hi, $userName!\n' : '';
-
     return Conversation(
-      question: ConversationQuestion(
-        message: '${greeting}What are we gonna do today?',
-      ),
+      question: ConversationQuestion(message: 'What do you want to do?'),
       answers: [
         ConversationAnswer(
-          message: "Let's practice!",
+          message: "I want to manage my avatar.",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
             await hide();
             await navigator.push(
               generateRoute(
-                const TopicSelectScreen(),
-                transitionType: TransitionType.none,
+                const UserSettingScreen(),
+                transitionType: TransitionType.fade,
               ),
             );
             await show();
           },
         ),
         ConversationAnswer(
-          message: "I want to configure this app.",
+          message: "I want to manage your avatar.",
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
             await hide();
             await navigator.push(
               generateRoute(
-                const SettingsScreen(),
-                transitionType: TransitionType.none,
+                const AvatarSettingScreen(),
+                transitionType: TransitionType.fade,
               ),
             );
             await show();
+          },
+        ),
+        ConversationAnswer(
+          message: "I want to log out.",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
+
+            await FirebaseAuth.instance.signOut();
+
+            navigator.popUntil((route) => route.isFirst);
           },
         ),
       ],
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    loadUser();
   }
 
   @override
