@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
             await hide();
             await navigator.push(
               generateRoute(
-                TopicSelectScreen(),
+                const TopicSelectScreen(),
                 transitionType: TransitionType.none,
               ),
             );
@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
             await hide();
             await navigator.push(
               generateRoute(
-                SettingsScreen(),
+                const SettingsScreen(),
                 transitionType: TransitionType.none,
               ),
             );

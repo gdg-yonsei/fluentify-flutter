@@ -18,15 +18,12 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
-  final SceneService sceneService = SceneService();
-  final FeedbackService feedbackService = FeedbackService();
-
   final List<String> sceneIds;
 
   final int index;
   final SceneDTO scene;
 
-  CommunicationFeedbackScreen({
+  const CommunicationFeedbackScreen({
     super.key,
     required this.sceneIds,
     required this.index,
@@ -55,7 +52,7 @@ class _CommunicationFeedbackScreenState
       final audioFile = File(audioPath);
       final audioRef = await targetRef.putFile(audioFile);
 
-      feedback = await widget.feedbackService.getCommunicationFeedback(
+      feedback = await FeedbackService.getCommunicationFeedback(
         sceneId: widget.scene.id,
         audioFileUrl: await audioRef.ref.getDownloadURL(),
       );
@@ -79,7 +76,7 @@ class _CommunicationFeedbackScreenState
             ? PendingScreen(
                 label: 'Case ${nextIndex + 1}',
                 action: () async {
-                  final scene = await widget.sceneService.getScene(
+                  final scene = await SceneService.getScene(
                     id: widget.sceneIds[nextIndex],
                   );
 

@@ -2,14 +2,14 @@ import 'package:fluentify/interfaces/user.pb.dart';
 import 'package:fluentify/repositories/user.dart';
 
 class UserService {
-  Future<UserDTO> getUser({required String id}) async {
+  static Future<UserDTO> getUser({required String id}) async {
     final request = GetUserRequest(id: id);
     final response = await UserRepository.getUser(request);
 
     return response.user;
   }
 
-  Future<UserDTO> updateUser({
+  static Future<UserDTO> updateUser({
     required String id,
     String? name,
     int? age,
@@ -20,7 +20,7 @@ class UserService {
     return response.user;
   }
 
-  Future<String> deleteUser({required String id}) async {
+  static Future<String> deleteUser({required String id}) async {
     final request = DeleteUserRequest(id: id);
     final response = await UserRepository.deleteUser(request);
 

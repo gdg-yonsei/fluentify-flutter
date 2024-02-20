@@ -19,14 +19,11 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
-  final SentenceService sentenceService = SentenceService();
-  final FeedbackService feedbackService = FeedbackService();
-
   final List<String> sentenceIds;
   final int index;
   final SentenceDTO sentence;
 
-  PronunciationFeedbackScreen({
+  const PronunciationFeedbackScreen({
     super.key,
     required this.sentenceIds,
     required this.index,
@@ -55,7 +52,7 @@ class _PronunciationFeedbackScreenState
       final audioFile = File(audioPath);
       final audioRef = await targetRef.putFile(audioFile);
 
-      feedback = await widget.feedbackService.getPronunciationFeedback(
+      feedback = await FeedbackService.getPronunciationFeedback(
         sentenceId: widget.sentence.id,
         audioFileUrl: await audioRef.ref.getDownloadURL(),
       );
@@ -79,7 +76,7 @@ class _PronunciationFeedbackScreenState
             ? PendingScreen(
                 label: 'Case ${nextIndex + 1}',
                 action: () async {
-                  final sentence = await widget.sentenceService.getSentence(
+                  final sentence = await SentenceService.getSentence(
                     id: widget.sentenceIds[nextIndex],
                   );
 

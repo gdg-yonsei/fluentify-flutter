@@ -11,13 +11,9 @@ import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackSelectScreen extends StatelessWidget {
-  final TopicService topicService = TopicService();
-  final SentenceService sentenceService = SentenceService();
-  final SceneService sceneService = SceneService();
-
   final String topicId;
 
-  FeedbackSelectScreen({super.key, required this.topicId});
+  const FeedbackSelectScreen({super.key, required this.topicId});
 
   Conversation _generateConversation(BuildContext context) {
     return Conversation(
@@ -34,8 +30,8 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    final topic = await topicService.getTopic(id: topicId);
-                    final sentence = await sentenceService.getSentence(
+                    final topic = await TopicService.getTopic(id: topicId);
+                    final sentence = await SentenceService.getSentence(
                       id: topic.sentenceIds[0],
                     );
 
@@ -68,8 +64,8 @@ class FeedbackSelectScreen extends StatelessWidget {
                 PendingScreen(
                   label: 'Case 1',
                   action: () async {
-                    final topic = await topicService.getTopic(id: topicId);
-                    final scene = await sceneService.getScene(
+                    final topic = await TopicService.getTopic(id: topicId);
+                    final scene = await SceneService.getScene(
                       id: topic.sceneIds[0],
                     );
 
