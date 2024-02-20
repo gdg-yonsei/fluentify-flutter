@@ -7,7 +7,7 @@ class FeedbackRepository {
     await Future.delayed(const Duration(seconds: 5));
 
     return GetPronunciationFeedbackResponse(
-      pronunciationFeeback: PronunciationFeedbackDTO(
+      pronunciationFeedback: PronunciationFeedbackDTO(
         sentenceId: request.sentenceId,
         incorrectIndexes: [1, 3, 4, 10],
         pronunciationScore: 4,

@@ -14,7 +14,7 @@ class FeedbackService {
     );
     final response = await feedbackRepository.getPronunciationFeedback(request);
 
-    return response.pronunciationFeeback;
+    return response.pronunciationFeedback;
   }
 
   Future<CommunicationFeedbackDTO> getCommunicationFeedback({
