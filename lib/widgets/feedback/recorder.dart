@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -24,6 +26,9 @@ class Recorder extends StatefulWidget {
 class _RecorderState extends State<Recorder> {
   bool isRecording = false;
 
+  StreamSubscription<Amplitude>? _amplitudeSubscription;
+  double currentAmplitude = 0;
+
   @override
   void initState() {
     super.initState();
@@ -40,8 +45,18 @@ class _RecorderState extends State<Recorder> {
     final audioName = '${const Uuid().v4()}.m4a';
 
     await widget.recorder.start(
-      const RecordConfig(encoder: AudioEncoder.pcm16bits),
+      const RecordConfig(encoder: AudioEncoder.aacLc),
       path: '${temporaryDirectory.path}/$audioName',
+    );
+
+    _amplitudeSubscription = widget.recorder
+        .onAmplitudeChanged(const Duration(milliseconds: 100))
+        .listen(
+      (amplitude) {
+        setState(() {
+          currentAmplitude = amplitude.current;
+        });
+      },
     );
 
     setState(() {
@@ -65,6 +80,7 @@ class _RecorderState extends State<Recorder> {
 
   @override
   void dispose() {
+    _amplitudeSubscription?.cancel();
     widget.recorder.dispose();
 
     super.dispose();
