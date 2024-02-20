@@ -20,7 +20,12 @@ class SettingsScreen extends StatelessWidget {
             final navigator = Navigator.of(context);
 
             await hide();
-            await navigator.push(generateRoute(const UserSettingScreen()));
+            await navigator.push(
+              generateRoute(
+                const UserSettingScreen(),
+                transitionType: TransitionType.fade,
+              ),
+            );
             await show();
           },
         ),
@@ -30,7 +35,12 @@ class SettingsScreen extends StatelessWidget {
             final navigator = Navigator.of(context);
 
             await hide();
-            await navigator.push(generateRoute(const AvatarSettingScreen()));
+            await navigator.push(
+              generateRoute(
+                const AvatarSettingScreen(),
+                transitionType: TransitionType.fade,
+              ),
+            );
             await show();
           },
         ),
