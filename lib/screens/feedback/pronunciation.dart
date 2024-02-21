@@ -64,6 +64,8 @@ class _PronunciationFeedbackScreenState
       setState(() {
         state = FeedbackState.done;
       });
+
+      _avatarController.play();
     } catch (e) {
       setState(() {
         state = FeedbackState.ready;
@@ -107,7 +109,8 @@ class _PronunciationFeedbackScreenState
     _avatarController = VideoPlayerController.networkUrl(
       Uri.parse(widget.sentence.exampleVideoUrl),
     );
-    _initializeAvatar = _avatarController.initialize();
+    _initializeAvatar = _avatarController.initialize()
+      ..then((value) => _avatarController.play());
   }
 
   @override
@@ -142,14 +145,17 @@ class _PronunciationFeedbackScreenState
                 future: _initializeAvatar,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      width: 150,
-                      height: 150,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      clipBehavior: Clip.hardEdge,
-                      child: AspectRatio(
-                        aspectRatio: _avatarController.value.aspectRatio,
-                        child: VideoPlayer(_avatarController..play()),
+                    return GestureDetector(
+                      onTap: () => _avatarController.play(),
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: const BoxDecoration(shape: BoxShape.circle),
+                        clipBehavior: Clip.hardEdge,
+                        child: AspectRatio(
+                          aspectRatio: _avatarController.value.aspectRatio,
+                          child: VideoPlayer(_avatarController),
+                        ),
                       ),
                     );
                   }
@@ -179,10 +185,7 @@ class _PronunciationFeedbackScreenState
                   edgeLocation: EdgeLocation.top,
                 ),
                 const SizedBox(height: 10),
-                SpeechBubble(
-                  message: feedback.negativeFeedback,
-                  edgeLocation: EdgeLocation.top,
-                ),
+                SpeechBubble(message: feedback.negativeFeedback),
                 const SizedBox(height: 10),
                 PronunciationCorrector(
                   sentence: widget.sentence,
