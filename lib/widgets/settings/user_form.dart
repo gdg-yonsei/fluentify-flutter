@@ -17,6 +17,13 @@ class UserForm extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 3,
+            blurRadius: 20,
+          ),
+        ],
       ),
       alignment: Alignment.center,
       child: Column(

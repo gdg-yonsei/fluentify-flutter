@@ -16,12 +16,41 @@ class SpeechBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap?.call(),
-      child: Column(
-        children: [
-          if (edgeLocation == EdgeLocation.top)
-            Transform.flip(
-              flipY: true,
-              child: ClipPath(
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 3,
+              blurRadius: 20,
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            if (edgeLocation == EdgeLocation.top)
+              Transform.flip(
+                flipY: true,
+                child: ClipPath(
+                  clipper: TriangleClipper(),
+                  child: Container(
+                    color: Colors.white,
+                    height: 10,
+                    width: 20,
+                  ),
+                ),
+              ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              alignment: Alignment.center,
+              child: Text(message, textAlign: TextAlign.center),
+            ),
+            if (edgeLocation == EdgeLocation.bottom)
+              ClipPath(
                 clipper: TriangleClipper(),
                 child: Container(
                   color: Colors.white,
@@ -29,26 +58,8 @@ class SpeechBubble extends StatelessWidget {
                   width: 20,
                 ),
               ),
-            ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            alignment: Alignment.center,
-            child: Text(message, textAlign: TextAlign.center),
-          ),
-          if (edgeLocation == EdgeLocation.bottom)
-            ClipPath(
-              clipper: TriangleClipper(),
-              child: Container(
-                color: Colors.white,
-                height: 10,
-                width: 20,
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
