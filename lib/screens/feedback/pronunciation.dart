@@ -13,7 +13,7 @@ import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
-import 'package:fluentify/widgets/feedback/corrector.dart';
+import 'package:fluentify/widgets/feedback/pronunciation_corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -142,9 +142,11 @@ class _PronunciationFeedbackScreenState
                 future: _initializeAvatar,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return SizedBox(
+                    return Container(
                       width: 150,
                       height: 150,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      clipBehavior: Clip.hardEdge,
                       child: AspectRatio(
                         aspectRatio: _avatarController.value.aspectRatio,
                         child: VideoPlayer(_avatarController..play()),
@@ -177,14 +179,9 @@ class _PronunciationFeedbackScreenState
                   edgeLocation: EdgeLocation.top,
                 ),
                 const SizedBox(height: 10),
-                const SpeechBubble(
-                  message:
-                      'The below one is the corrected version of your speech.',
-                ),
-                const SizedBox(height: 10),
-                Corrector(
-                  text: widget.sentence.text,
-                  incorrectIndexes: feedback.incorrectIndexes,
+                PronunciationCorrector(
+                  sentence: widget.sentence,
+                  feedback: feedback,
                 ),
               ],
             ],
