@@ -13,10 +13,10 @@ import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/avatar.dart';
 import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
-import 'package:fluentify/widgets/feedback/corrector.dart';
+import 'package:fluentify/widgets/feedback/pronunciation_corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:video_player/video_player.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
   final List<String> sentenceIds;
@@ -37,24 +37,28 @@ class PronunciationFeedbackScreen extends StatefulWidget {
 
 class _PronunciationFeedbackScreenState
     extends State<PronunciationFeedbackScreen> {
+  late VideoPlayerController _avatarController;
+  late Future<void> _initializeAvatar;
+
   FeedbackState state = FeedbackState.ready;
   late PronunciationFeedbackDTO feedback;
 
-  void finishRecord(String audioPath) async {
+  void finishRecord(String audioPath, String audioName) async {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    final storageRef = FirebaseStorage.instance.ref();
-    final targetRef = storageRef.child('user-upload/${const Uuid().v4()}.m4a');
-
     try {
       final audioFile = File(audioPath);
-      final audioRef = await targetRef.putFile(audioFile);
+
+      final uploadPath = 'audio/$audioName';
+      final uploadRef = FirebaseStorage.instance.ref(uploadPath);
+
+      await uploadRef.putFile(audioFile);
 
       feedback = await FeedbackService.getPronunciationFeedback(
         sentenceId: widget.sentence.id,
-        audioFileUrl: await audioRef.ref.getDownloadURL(),
+        audioPath: uploadPath,
       );
 
       setState(() {
@@ -97,6 +101,23 @@ class _PronunciationFeedbackScreenState
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _avatarController = VideoPlayerController.networkUrl(
+      Uri.parse(widget.sentence.exampleVideoUrl),
+    );
+    _initializeAvatar = _avatarController.initialize();
+  }
+
+  @override
+  void dispose() {
+    _avatarController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FluentifyAppBar(
@@ -117,7 +138,25 @@ class _PronunciationFeedbackScreenState
           top: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Avatar(),
+              FutureBuilder(
+                future: _initializeAvatar,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Container(
+                      width: 150,
+                      height: 150,
+                      decoration: const BoxDecoration(shape: BoxShape.circle),
+                      clipBehavior: Clip.hardEdge,
+                      child: AspectRatio(
+                        aspectRatio: _avatarController.value.aspectRatio,
+                        child: VideoPlayer(_avatarController..play()),
+                      ),
+                    );
+                  }
+
+                  return const Avatar();
+                },
+              ),
               const SizedBox(height: 30),
               if (state == FeedbackState.ready) ...[
                 const SpeechBubble(
@@ -140,14 +179,9 @@ class _PronunciationFeedbackScreenState
                   edgeLocation: EdgeLocation.top,
                 ),
                 const SizedBox(height: 10),
-                const SpeechBubble(
-                  message:
-                      'The below one is the corrected version of your speech.',
-                ),
-                const SizedBox(height: 10),
-                Corrector(
-                  text: widget.sentence.text,
-                  incorrectIndexes: feedback.incorrectIndexes,
+                PronunciationCorrector(
+                  sentence: widget.sentence,
+                  feedback: feedback,
                 ),
               ],
             ],

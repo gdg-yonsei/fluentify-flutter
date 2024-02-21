@@ -19,6 +19,7 @@ class FluentifyAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+      centerTitle: true,
       iconTheme: const IconThemeData(color: Colors.white),
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 0,

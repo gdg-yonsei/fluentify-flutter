@@ -15,7 +15,6 @@ import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class CommunicationFeedbackScreen extends StatefulWidget {
   final List<String> sceneIds;
@@ -40,21 +39,22 @@ class _CommunicationFeedbackScreenState
   FeedbackState state = FeedbackState.ready;
   late CommunicationFeedbackDTO feedback;
 
-  void finishRecord(String audioPath) async {
+  void finishRecord(String audioPath, String audioName) async {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    final storageRef = FirebaseStorage.instance.ref();
-    final targetRef = storageRef.child('user-upload/${const Uuid().v4()}.m4a');
-
     try {
       final audioFile = File(audioPath);
-      final audioRef = await targetRef.putFile(audioFile);
+
+      final uploadPath = 'audio/$audioName';
+      final uploadRef = FirebaseStorage.instance.ref(uploadPath);
+
+      await uploadRef.putFile(audioFile);
 
       feedback = await FeedbackService.getCommunicationFeedback(
         sceneId: widget.scene.id,
-        audioFileUrl: await audioRef.ref.getDownloadURL(),
+        audioPath: uploadPath,
       );
 
       setState(() {

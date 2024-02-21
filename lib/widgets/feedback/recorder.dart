@@ -1,3 +1,5 @@
+import 'package:fluentify/widgets/common/popper.dart';
+import 'package:fluentify/widgets/common/speech_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -7,7 +9,7 @@ class Recorder extends StatefulWidget {
   final AudioRecorder recorder = AudioRecorder();
 
   final void Function()? onStartRecord;
-  final void Function(String audioPath)? onFinishRecord;
+  final void Function(String audioPath, String audioName)? onFinishRecord;
   final void Function()? onPermissionDenied;
 
   Recorder({
@@ -40,7 +42,7 @@ class _RecorderState extends State<Recorder> {
     final audioName = '${const Uuid().v4()}.m4a';
 
     await widget.recorder.start(
-      const RecordConfig(encoder: AudioEncoder.pcm16bits),
+      const RecordConfig(encoder: AudioEncoder.aacLc),
       path: '${temporaryDirectory.path}/$audioName',
     );
 
@@ -56,11 +58,13 @@ class _RecorderState extends State<Recorder> {
 
     if (audioPath == null) return;
 
+    final audioName = audioPath.split('/').last;
+
     setState(() {
       isRecording = false;
     });
 
-    widget.onFinishRecord?.call(audioPath);
+    widget.onFinishRecord?.call(audioPath, audioName);
   }
 
   @override
@@ -72,23 +76,35 @@ class _RecorderState extends State<Recorder> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: isRecording ? Colors.red : Colors.grey,
-          width: 2,
+    return Column(
+      children: [
+        Popper(
+          visible: isRecording,
+          child: const SpeechBubble(
+            message: "Now recording!",
+            edgeLocation: EdgeLocation.bottom,
+          ),
         ),
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-        onPressed: isRecording ? finishRecord : startRecord,
-        icon: Icon(
-          Icons.mic_outlined,
-          color: isRecording ? Colors.red : Colors.grey,
+        const SizedBox(height: 20),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isRecording ? Colors.red : Colors.grey,
+              width: 2,
+            ),
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            onPressed: isRecording ? finishRecord : startRecord,
+            icon: Icon(
+              Icons.mic_outlined,
+              color: isRecording ? Colors.red : Colors.grey,
+            ),
+            iconSize: 40,
+            padding: const EdgeInsets.all(20),
+          ),
         ),
-        iconSize: 40,
-        padding: const EdgeInsets.all(20),
-      ),
+      ],
     );
   }
 }
