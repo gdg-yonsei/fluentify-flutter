@@ -20,17 +20,24 @@ class PronunciationCorrector extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 3,
+            blurRadius: 20,
+          ),
+        ],
       ),
       alignment: Alignment.center,
       child: Column(
         children: [
-          Text('What you say : ${feedback.transcript}'),
           Text('Pronunciation score : ${feedback.pronunciationScore}'),
           Text('Speed score : ${feedback.speedScore}'),
           Text('Volume score : ${feedback.volumeScore}'),
           Text.rich(
             TextSpan(
-              children: sentence.text.characters
+              children: sentence.text
+                  .split(' ')
                   .mapIndexed(
                     (index, c) => TextSpan(
                       text: c,

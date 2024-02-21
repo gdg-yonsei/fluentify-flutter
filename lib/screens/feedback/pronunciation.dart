@@ -175,7 +175,12 @@ class _PronunciationFeedbackScreenState
               ],
               if (state == FeedbackState.done) ...[
                 SpeechBubble(
-                  message: feedback.overallFeedback,
+                  message: feedback.positiveFeedback,
+                  edgeLocation: EdgeLocation.top,
+                ),
+                const SizedBox(height: 10),
+                SpeechBubble(
+                  message: feedback.negativeFeedback,
                   edgeLocation: EdgeLocation.top,
                 ),
                 const SizedBox(height: 10),
