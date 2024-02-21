@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fluentify/interfaces/feedback.pb.dart';
 import 'package:fluentify/interfaces/sentence.pb.dart';
+import 'package:fluentify/widgets/feedback/score_board.dart';
 import 'package:flutter/material.dart';
 
 class PronunciationCorrector extends StatelessWidget {
@@ -20,29 +21,40 @@ class PronunciationCorrector extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 3,
+            blurRadius: 20,
+          ),
+        ],
       ),
       alignment: Alignment.center,
       child: Column(
         children: [
-          Text('What you say : ${feedback.transcript}'),
-          Text('Pronunciation score : ${feedback.pronunciationScore}'),
-          Text('Speed score : ${feedback.speedScore}'),
-          Text('Volume score : ${feedback.volumeScore}'),
+          ScoreBoard(
+            pronunciationScore: feedback.pronunciationScore,
+            speedScore: feedback.speedScore,
+            volumeScore: feedback.volumeScore,
+          ),
+          const SizedBox(height: 20),
           Text.rich(
             TextSpan(
-              children: sentence.text.characters
-                  .mapIndexed(
-                    (index, c) => TextSpan(
-                      text: c,
-                      style: feedback.incorrectIndexes.contains(index)
-                          ? const TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            )
-                          : null,
-                    ),
-                  )
-                  .toList(),
+              children: sentence.text.split(' ').mapIndexed(
+                (index, word) {
+                  final prefix = index == 0 ? '' : ' ';
+
+                  return TextSpan(
+                    text: '$prefix$word',
+                    style: feedback.incorrectIndexes.contains(index)
+                        ? const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          )
+                        : const TextStyle(color: Colors.blue),
+                  );
+                },
+              ).toList(),
             ),
           ),
         ],
