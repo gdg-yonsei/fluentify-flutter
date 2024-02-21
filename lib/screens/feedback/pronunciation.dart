@@ -16,6 +16,7 @@ import 'package:fluentify/widgets/common/splitter.dart';
 import 'package:fluentify/widgets/feedback/corrector.dart';
 import 'package:fluentify/widgets/feedback/recorder.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class PronunciationFeedbackScreen extends StatefulWidget {
   final List<String> sentenceIds;
@@ -36,6 +37,9 @@ class PronunciationFeedbackScreen extends StatefulWidget {
 
 class _PronunciationFeedbackScreenState
     extends State<PronunciationFeedbackScreen> {
+  late VideoPlayerController _avatarController;
+  late Future<void> _initializeAvatar;
+
   FeedbackState state = FeedbackState.ready;
   late PronunciationFeedbackDTO feedback;
 
@@ -97,6 +101,23 @@ class _PronunciationFeedbackScreenState
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _avatarController = VideoPlayerController.networkUrl(
+      Uri.parse(widget.sentence.exampleVideoUrl),
+    );
+    _initializeAvatar = _avatarController.initialize();
+  }
+
+  @override
+  void dispose() {
+    _avatarController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: FluentifyAppBar(
@@ -117,7 +138,23 @@ class _PronunciationFeedbackScreenState
           top: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Avatar(),
+              FutureBuilder(
+                future: _initializeAvatar,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: AspectRatio(
+                        aspectRatio: _avatarController.value.aspectRatio,
+                        child: VideoPlayer(_avatarController..play()),
+                      ),
+                    );
+                  }
+
+                  return const Avatar();
+                },
+              ),
               const SizedBox(height: 30),
               if (state == FeedbackState.ready) ...[
                 const SpeechBubble(
