@@ -39,21 +39,22 @@ class _CommunicationFeedbackScreenState
   FeedbackState state = FeedbackState.ready;
   late CommunicationFeedbackDTO feedback;
 
-  void finishRecord(String audioPath) async {
+  void finishRecord(String audioPath, String audioName) async {
     setState(() {
       state = FeedbackState.evaluating;
     });
 
-    final storageRef = FirebaseStorage.instance.ref();
-    final targetRef = storageRef.child('audio/${audioPath.split('/').last}');
-
     try {
       final audioFile = File(audioPath);
-      final audioRef = await targetRef.putFile(audioFile);
+
+      final uploadPath = 'audio/$audioName';
+      final uploadRef = FirebaseStorage.instance.ref(uploadPath);
+
+      await uploadRef.putFile(audioFile);
 
       feedback = await FeedbackService.getCommunicationFeedback(
         sceneId: widget.scene.id,
-        audioFileUrl: await audioRef.ref.getDownloadURL(),
+        audioPath: uploadPath,
       );
 
       setState(() {

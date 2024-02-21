@@ -4,11 +4,11 @@ import 'package:fluentify/repositories/feedback.dart';
 class FeedbackService {
   static Future<PronunciationFeedbackDTO> getPronunciationFeedback({
     required String sentenceId,
-    required String audioFileUrl,
+    required String audioPath,
   }) async {
     final request = GetPronunciationFeedbackRequest(
       sentenceId: sentenceId,
-      audioFileUrl: audioFileUrl,
+      audioFileUrl: audioPath,
     );
     final response = await FeedbackRepository.getPronunciationFeedback(request);
 
@@ -17,11 +17,11 @@ class FeedbackService {
 
   static Future<CommunicationFeedbackDTO> getCommunicationFeedback({
     required String sceneId,
-    required String audioFileUrl,
+    required String audioPath,
   }) async {
     final request = GetCommunicationFeedbackRequest(
       sceneId: sceneId,
-      audioFileUrl: audioFileUrl,
+      audioFileUrl: audioPath,
     );
     final response = await FeedbackRepository.getCommunicationFeedback(request);
 

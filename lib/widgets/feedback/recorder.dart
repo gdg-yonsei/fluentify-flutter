@@ -9,7 +9,7 @@ class Recorder extends StatefulWidget {
   final AudioRecorder recorder = AudioRecorder();
 
   final void Function()? onStartRecord;
-  final void Function(String audioPath)? onFinishRecord;
+  final void Function(String audioPath, String audioName)? onFinishRecord;
   final void Function()? onPermissionDenied;
 
   Recorder({
@@ -71,11 +71,13 @@ class _RecorderState extends State<Recorder> {
 
     if (audioPath == null) return;
 
+    final audioName = audioPath.split('/').last;
+
     setState(() {
       isRecording = false;
     });
 
-    widget.onFinishRecord?.call(audioPath);
+    widget.onFinishRecord?.call(audioPath, audioName);
   }
 
   @override
