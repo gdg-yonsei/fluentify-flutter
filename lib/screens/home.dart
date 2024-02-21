@@ -7,6 +7,7 @@ import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
 import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -79,11 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const FluentifyAppBar(),
-      body: SafeArea(
-        child: ConversationScaffold(
-          conversation: _generateConversation(context),
+    return PopScope(
+      onPopInvoked: (canPop) {
+        SystemNavigator.pop();
+      },
+      child: Scaffold(
+        appBar: const FluentifyAppBar(),
+        body: SafeArea(
+          child: ConversationScaffold(
+            conversation: _generateConversation(context),
+          ),
         ),
       ),
     );
