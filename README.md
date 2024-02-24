@@ -1,4 +1,4 @@
-<h1 align="center"><img src="https://github.com/gdsc-ys/fluentify-flutter/assets/11978494/8755bc8b-1ee0-4b49-bc98-0d4d930916bb" alt="icon" width="25" height="25"> fleuntify - Flutter</h1>
+<h1 align="center"><img src="https://github.com/gdsc-ys/fluentify-flutter/assets/11978494/8755bc8b-1ee0-4b49-bc98-0d4d930916bb" alt="icon" width="25" height="25"> fluentify - Flutter</h1>
 
 ![cover-v4](https://github.com/gdsc-ys/fluentify-flutter/assets/11978494/1afba24e-064a-43d2-9ffd-92596b26a820)
 
