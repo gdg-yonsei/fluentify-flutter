@@ -28,12 +28,12 @@ You can download the released version of our application from [here](https://git
 ### Sync interfaces
 
 1. Clone this project recursively.
-```sh
-git clone --recursive https://github.com/gdsc-ys/fluentify-flutter.git
-```
+    ```sh
+    git clone --recursive https://github.com/gdsc-ys/fluentify-flutter.git
+    ```
 
 2. Generate required interfaces from proto
-```sh
-brew install bufbuild/buf/buf
-sh scripts/sync_idl.sh
-```
+    ```sh
+    brew install bufbuild/buf/buf
+    sh scripts/sync_idl.sh
+    ```
