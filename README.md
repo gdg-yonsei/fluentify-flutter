@@ -23,14 +23,16 @@ This is the repository for the client application. You can check out our other c
 
 You can download the released version of our application from [here](https://github.com/gdsc-ys/fluentify-flutter/tree/main/release).
 
-## How to sync interfaces
+## How to configure
 
-### 1. Clone this project recursively.
+### Sync interfaces
+
+1. Clone this project recursively.
 ```sh
 git clone --recursive https://github.com/gdsc-ys/fluentify-flutter.git
 ```
 
-### 2. Generate required interfaces from proto
+2. Generate required interfaces from proto
 ```sh
 brew install bufbuild/buf/buf
 sh scripts/sync_idl.sh
