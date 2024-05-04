@@ -4,13 +4,13 @@ import 'package:fluentify/widgets/common/conversation_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationSettingScreen extends StatelessWidget {
-  const NotificationSettingScreen({super.key});
+class ConfirmationSettingScreen extends StatelessWidget {
+  const ConfirmationSettingScreen({super.key});
 
-  Future<void> configureAssistiveDeviceNotification(bool activated) async {
+  Future<void> configureAssistiveDeviceConfirmation(bool activated) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setBool('assistive-device-notification', activated);
+    await prefs.setBool('assistive-device-confirmation', activated);
   }
 
   Conversation _generateConversation(BuildContext context) {
@@ -24,7 +24,7 @@ class NotificationSettingScreen extends StatelessWidget {
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
-            configureAssistiveDeviceNotification(true);
+            configureAssistiveDeviceConfirmation(true);
 
             await hide();
             navigator.pop();
@@ -35,7 +35,7 @@ class NotificationSettingScreen extends StatelessWidget {
           onAnswer: (hide, show) async {
             final navigator = Navigator.of(context);
 
-            configureAssistiveDeviceNotification(false);
+            configureAssistiveDeviceConfirmation(false);
 
             await hide();
             navigator.pop();

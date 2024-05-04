@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/screens/settings/avatar.dart';
-import 'package:fluentify/screens/settings/notification.dart';
+import 'package:fluentify/screens/settings/confirmation.dart';
 import 'package:fluentify/screens/settings/user.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
             await hide();
             await navigator.push(
               generateRoute(
-                const NotificationSettingScreen(),
+                const ConfirmationSettingScreen(),
                 transitionType: TransitionType.fade,
               ),
             );
