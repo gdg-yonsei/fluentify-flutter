@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
 import 'package:fluentify/screens/settings/avatar.dart';
+import 'package:fluentify/screens/settings/confirmation.dart';
 import 'package:fluentify/screens/settings/user.dart';
 import 'package:fluentify/utils/route.dart';
 import 'package:fluentify/widgets/common/appbar.dart';
@@ -38,6 +39,21 @@ class SettingsScreen extends StatelessWidget {
             await navigator.push(
               generateRoute(
                 const AvatarSettingScreen(),
+                transitionType: TransitionType.fade,
+              ),
+            );
+            await show();
+          },
+        ),
+        ConversationAnswer(
+          message: "I want to get notified about my assistive devices.",
+          onAnswer: (hide, show) async {
+            final navigator = Navigator.of(context);
+
+            await hide();
+            await navigator.push(
+              generateRoute(
+                const ConfirmationSettingScreen(),
                 transitionType: TransitionType.fade,
               ),
             );
