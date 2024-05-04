@@ -1,5 +1,6 @@
 import 'package:fluentify/interfaces/user.pb.dart';
 import 'package:fluentify/repositories/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   static Future<UserDTO> getUser({required String id}) async {
@@ -25,5 +26,19 @@ class UserService {
     final response = await UserRepository.deleteUser(request);
 
     return response.id;
+  }
+
+  static Future<bool> checkAssistiveDeviceConfirmable() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.getBool('assistive-device-confirmable') ?? true;
+  }
+
+  static Future<void> updateAssistiveDeviceConfirmable(
+    bool updatedValue,
+  ) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool('assistive-device-confirmable', updatedValue);
   }
 }

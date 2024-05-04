@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentify/interfaces/conversation.dart';
+import 'package:fluentify/screens/confirmation.dart';
 import 'package:fluentify/screens/selection/topic.dart';
 import 'package:fluentify/screens/settings/index.dart';
 import 'package:fluentify/services/user.dart';
@@ -20,12 +21,22 @@ class _HomeScreenState extends State<HomeScreen> {
   final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   String? userName;
+  bool isAssistiveDeviceConfirmable = true;
 
   Future<void> loadUser() async {
     final user = await UserService.getUser(id: uid);
 
     setState(() {
       userName = user.name;
+    });
+  }
+
+  Future<void> checkAssistiveDeviceConfirmable() async {
+    final isAssistiveDeviceConfirmable =
+        await UserService.checkAssistiveDeviceConfirmable();
+
+    setState(() {
+      this.isAssistiveDeviceConfirmable = isAssistiveDeviceConfirmable;
     });
   }
 
@@ -45,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
             await hide();
             await navigator.push(
               generateRoute(
-                const TopicSelectScreen(),
+                isAssistiveDeviceConfirmable
+                    ? const ConfirmationScreen()
+                    : const TopicSelectScreen(),
                 transitionType: TransitionType.none,
               ),
             );
@@ -80,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    checkAssistiveDeviceConfirmable();
+
     return PopScope(
       onPopInvoked: (canPop) {
         SystemNavigator.pop();
